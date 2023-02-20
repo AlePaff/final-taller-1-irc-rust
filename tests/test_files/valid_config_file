@@ -1,0 +1,7 @@
+name:server_uno
+password:1111
+port:7878
+ip:localhost
+trusted_servers_path:./trusted_servers.csv
+operators_path:./operators_test.csv
+log_path:./logs/log1.txt

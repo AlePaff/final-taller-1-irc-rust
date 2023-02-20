@@ -1,0 +1,7 @@
+name:server_cuatro
+password:4444
+port:7881
+ip:localhost
+trusted_servers_path:./trusted_servers.csv
+operators_path:./operators_test.csv
+log_path:./logs/log4.txt

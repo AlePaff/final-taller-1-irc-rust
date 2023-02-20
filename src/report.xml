@@ -1,0 +1,374 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dfxml xmloutputversion='1.0'>
+  <metadata 
+  xmlns='http://afflib.org/tcpflow/' 
+  xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' 
+  xmlns:dc='http://purl.org/dc/elements/1.1/'>
+    <dc:type>Feature Extraction</dc:type>
+  </metadata>
+  <creator version='1.0'>
+    <program>TCPFLOW</program>
+    <version>1.6.1</version>
+    <build_environment>
+      <compiler>12.2.0 (12.2.0)</compiler>
+      <CPPFLAGS>-I/usr/local/include  -I/usr/local/include -DUTC_OFFSET=+0000</CPPFLAGS>
+      <CFLAGS>-g -march=x86-64 -mtune=generic -O3 -pipe -fno-plt -fexceptions         -Wp,-D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security         -fstack-clash-protection -fcf-protection -flto=auto -MD -Wpointer-arith -Wmissing-declarations -Wmissing-prototypes -Wshadow -Wwrite-strings -Wcast-align -Waggregate-return -Wbad-function-cast -Wcast-qual -Wundef -Wredundant-decls -Wdisabled-optimization -Wfloat-equal -Wmultichar -Wc++-compat -Wmissing-noreturn -Wall -Wstrict-prototypes -MD -D_FORTIFY_SOURCE=2 -Wpointer-arith -Wmissing-declarations -Wmissing-prototypes -Wshadow -Wwrite-strings -Wcast-align -Waggregate-return -Wbad-function-cast -Wcast-qual -Wundef -Wredundant-decls -Wdisabled-optimization -Wfloat-equal -Wmultichar -Wc++-compat -Wmissing-noreturn -Wall -Wstrict-prototypes</CFLAGS>
+      <CXXFLAGS>-g -march=x86-64 -mtune=generic -O3 -pipe -fno-plt -fexceptions         -Wp,-D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security         -fstack-clash-protection -fcf-protection -Wp,-D_GLIBCXX_ASSERTIONS -flto=auto -Wall -MD -D_FORTIFY_SOURCE=2 -Wpointer-arith -Wshadow -Wwrite-strings -Wcast-align -Wredundant-decls -Wdisabled-optimization -Wfloat-equal -Wmultichar -Wmissing-noreturn -Woverloaded-virtual -Wsign-promo -funit-at-a-time -Weffc++ -Wno-address-of-packed-member</CXXFLAGS>
+      <LDFLAGS>-L/usr/local/lib -Wl,-O1,--sort-common,--as-needed,-z,relro,-z,now -flto=auto -L/usr/local/lib</LDFLAGS>
+      <LIBS>-lcap-ng -lpcap -lcairo -lfontconfig -lfreetype -lbz2 -lpixman-1 -lexpat -lcrypto -lsqlite3 -lssl -lcrypto -ldl -lz </LIBS>
+      <compilation_date>2022-11-02T00:55:52</compilation_date>
+      <library name="boost" version="108000"/>
+      <library name="sqlite" version="3.39.4" source_id="2022-09-29 15:55:41 a29f9949895322123f7c38fbe94c649a9d6e6c9cd0c3b41c96d694552f26alt1"/>
+      <git commit="tcpflow-1.4.0beta1-367-gc98938b-dirty"/>
+    </build_environment>
+    <execution_environment>
+      <os_sysname>Linux</os_sysname>
+      <os_release>6.0.10-arch2-1</os_release>
+      <os_version>#1 SMP PREEMPT_DYNAMIC Sat, 26 Nov 2022 16:51:18 +0000</os_version>
+      <host>arch</host>
+      <arch>x86_64</arch>
+      <command_line>command line to be provided</command_line>
+      <uid>0</uid>
+      <username>root</username>
+      <start_time>2022-11-28T15:25:03Z</start_time>
+    </execution_environment>
+  </creator>
+  <configuration>
+  </configuration>
+  <tdelta>0</tdelta>
+  <configuration>
+    <fileobject>
+      <filename>::1.58744-::1.07878</filename>
+      <filesize>24</filesize>
+      <tcpflow startime='2022-11-28T15:28:13.234739Z' endtime='2022-11-28T15:33:31.394981Z' mac_daddr='00:00:03:04:00:06' family='10' src_ipn='::1' dst_ipn='::1' srcport='58744' dstport='7878' packets='6' len='548' />
+    </fileobject>
+    <fileobject>
+      <filename>::1.07878-::1.57448</filename>
+      <filesize>67</filesize>
+      <tcpflow startime='2022-11-28T15:56:53.951899Z' endtime='2022-11-28T16:05:58.279429Z' mac_daddr='00:00:03:04:00:06' family='10' src_ipn='::1' dst_ipn='::1' srcport='7878' dstport='57448' packets='16' len='1471' />
+    </fileobject>
+    <fileobject>
+      <filename>::1.07878-::1.54426</filename>
+      <filesize>144</filesize>
+      <tcpflow startime='2022-11-28T15:56:36.140494Z' endtime='2022-11-28T16:05:59.236093Z' mac_daddr='00:00:03:04:00:06' family='10' src_ipn='::1' dst_ipn='::1' srcport='7878' dstport='54426' packets='19' len='1812' />
+    </fileobject>
+    <fileobject>
+      <filename>::1.07878-::1.57940</filename>
+      <filesize>60</filesize>
+      <tcpflow startime='2022-11-28T16:06:09.588542Z' endtime='2022-11-28T16:07:49.116776Z' mac_daddr='00:00:03:04:00:06' family='10' src_ipn='::1' dst_ipn='::1' srcport='7878' dstport='57940' packets='14' len='1288' />
+    </fileobject>
+    <fileobject>
+      <filename>::1.56422-::1.07878</filename>
+      <filesize>107</filesize>
+      <tcpflow startime='2022-11-28T16:17:45.773235Z' endtime='2022-11-28T17:12:06.976001Z' mac_daddr='00:00:03:04:00:06' family='10' src_ipn='::1' dst_ipn='::1' srcport='56422' dstport='7878' packets='23' len='2127' />
+    </fileobject>
+    <fileobject>
+      <filename>::1.49212-::1.07878</filename>
+      <filesize>91</filesize>
+      <tcpflow startime='2022-11-28T16:17:36.355897Z' endtime='2022-11-28T17:12:06.976042Z' mac_daddr='00:00:03:04:00:06' family='10' src_ipn='::1' dst_ipn='::1' srcport='49212' dstport='7878' packets='29' len='2639' />
+    </fileobject>
+    <fileobject>
+      <filename>::1.07878-::1.36244</filename>
+      <filesize>37</filesize>
+      <tcpflow startime='2022-11-28T17:12:42.040182Z' endtime='2022-11-28T17:29:51.670384Z' mac_daddr='00:00:03:04:00:06' family='10' src_ipn='::1' dst_ipn='::1' srcport='7878' dstport='36244' packets='10' len='913' />
+    </fileobject>
+    <fileobject>
+      <filesize>0</filesize>
+      <tcpflow startime='2022-11-28T17:34:47.201190Z' endtime='2022-11-28T17:34:48.928695Z' mac_daddr='00:00:03:04:00:06' family='10' src_ipn='::1' dst_ipn='::1' srcport='48536' dstport='7878' packets='3' len='272' />
+    </fileobject>
+    <fileobject>
+      <filesize>0</filesize>
+      <tcpflow startime='2022-11-28T17:34:47.201214Z' endtime='2022-11-28T17:45:51.937705Z' mac_daddr='00:00:03:04:00:06' family='10' src_ipn='::1' dst_ipn='::1' srcport='7878' dstport='48536' packets='3' len='272' />
+    </fileobject>
+    <fileobject>
+      <filename>::1.07878-::1.35552</filename>
+      <filesize>37</filesize>
+      <tcpflow startime='2022-11-28T17:34:31.155605Z' endtime='2022-11-28T17:45:51.937758Z' mac_daddr='00:00:03:04:00:06' family='10' src_ipn='::1' dst_ipn='::1' srcport='7878' dstport='35552' packets='12' len='1101' />
+    </fileobject>
+    <fileobject>
+      <filesize>0</filesize>
+      <tcpflow startime='2022-11-28T17:46:14.782535Z' endtime='2022-11-28T17:46:17.138357Z' mac_daddr='00:00:03:04:00:06' family='10' src_ipn='::1' dst_ipn='::1' srcport='37582' dstport='7878' packets='3' len='272' />
+    </fileobject>
+    <fileobject>
+      <filesize>0</filesize>
+      <tcpflow startime='2022-11-28T17:46:14.782561Z' endtime='2022-11-28T17:50:21.408769Z' mac_daddr='00:00:03:04:00:06' family='10' src_ipn='::1' dst_ipn='::1' srcport='7878' dstport='37582' packets='3' len='272' />
+    </fileobject>
+    <fileobject>
+      <filename>::1.53088-::1.07878</filename>
+      <filesize>62</filesize>
+      <tcpflow startime='2022-11-28T17:48:10.593056Z' endtime='2022-11-28T17:50:22.610096Z' mac_daddr='00:00:03:04:00:06' family='10' src_ipn='::1' dst_ipn='::1' srcport='53088' dstport='7878' packets='11' len='1038' />
+    </fileobject>
+    <fileobject>
+      <filename>::1.07878-::1.48194</filename>
+      <filesize>60</filesize>
+      <tcpflow startime='2022-11-28T17:46:05.478574Z' endtime='2022-11-28T17:50:24.986041Z' mac_daddr='00:00:03:04:00:06' family='10' src_ipn='::1' dst_ipn='::1' srcport='7878' dstport='48194' packets='14' len='1288' />
+    </fileobject>
+    <fileobject>
+      <filename>::1.55274-::1.07878</filename>
+      <filesize>64</filesize>
+      <tcpflow startime='2022-11-28T17:50:34.204478Z' endtime='2022-11-28T17:53:15.981532Z' mac_daddr='00:00:03:04:00:06' family='10' src_ipn='::1' dst_ipn='::1' srcport='55274' dstport='7878' packets='2038' len='179404' />
+    </fileobject>
+    <fileobject>
+      <filename>::1.07878-::1.38318</filename>
+      <filesize>169</filesize>
+      <tcpflow startime='2022-11-28T17:50:45.311396Z' endtime='2022-11-28T17:53:16.005553Z' mac_daddr='00:00:03:04:00:06' family='10' src_ipn='::1' dst_ipn='::1' srcport='7878' dstport='38318' packets='21' len='2025' />
+    </fileobject>
+    <fileobject>
+      <filename>::1.38318-::1.07878</filename>
+      <filesize>187</filesize>
+      <tcpflow startime='2022-11-28T17:50:45.311380Z' endtime='2022-11-28T17:53:16.048155Z' mac_daddr='00:00:03:04:00:06' family='10' src_ipn='::1' dst_ipn='::1' srcport='38318' dstport='7878' packets='21' len='2043' />
+    </fileobject>
+    <fileobject>
+      <filename>::1.07878-::1.55274</filename>
+      <filesize>88786</filesize>
+      <tcpflow startime='2022-11-28T17:50:34.204491Z' endtime='2022-11-28T17:53:15.981496Z' mac_daddr='00:00:03:04:00:06' family='10' src_ipn='::1' dst_ipn='::1' srcport='7878' dstport='55274' packets='2032' len='267610' />
+    </fileobject>
+    <fileobject>
+      <filename>::1.48194-::1.07878</filename>
+      <filesize>96</filesize>
+      <tcpflow startime='2022-11-28T17:46:05.478557Z' endtime='2022-11-28T17:50:24.986021Z' mac_daddr='00:00:03:04:00:06' family='10' src_ipn='::1' dst_ipn='::1' srcport='48194' dstport='7878' packets='19' len='1776' />
+    </fileobject>
+    <fileobject>
+      <filename>::1.07878-::1.48528</filename>
+      <filesize>60</filesize>
+      <tcpflow startime='2022-11-28T17:34:42.221945Z' endtime='2022-11-28T17:45:52.527110Z' mac_daddr='00:00:03:04:00:06' family='10' src_ipn='::1' dst_ipn='::1' srcport='7878' dstport='48528' packets='11' len='1036' />
+    </fileobject>
+    <fileobject>
+      <filename>::1.48528-::1.07878</filename>
+      <filesize>94</filesize>
+      <tcpflow startime='2022-11-28T17:34:42.221936Z' endtime='2022-11-28T17:45:52.527098Z' mac_daddr='00:00:03:04:00:06' family='10' src_ipn='::1' dst_ipn='::1' srcport='48528' dstport='7878' packets='12' len='1158' />
+    </fileobject>
+    <fileobject>
+      <filename>::1.35552-::1.07878</filename>
+      <filesize>63</filesize>
+      <tcpflow startime='2022-11-28T17:34:31.155591Z' endtime='2022-11-28T17:35:26.364949Z' mac_daddr='00:00:03:04:00:06' family='10' src_ipn='::1' dst_ipn='::1' srcport='35552' dstport='7878' packets='13' len='1215' />
+    </fileobject>
+    <fileobject>
+      <filename>::1.37596-::1.07878</filename>
+      <filesize>121</filesize>
+      <tcpflow startime='2022-11-28T17:46:19.507056Z' endtime='2022-11-28T17:50:21.981498Z' mac_daddr='00:00:03:04:00:06' family='10' src_ipn='::1' dst_ipn='::1' srcport='37596' dstport='7878' packets='18' len='1713' />
+    </fileobject>
+    <fileobject>
+      <filename>::1.07878-::1.38510</filename>
+      <filesize>60</filesize>
+      <tcpflow startime='2022-11-28T17:30:06.098857Z' endtime='2022-11-28T17:32:58.126870Z' mac_daddr='00:00:03:04:00:06' family='10' src_ipn='::1' dst_ipn='::1' srcport='7878' dstport='38510' packets='11' len='1036' />
+    </fileobject>
+    <fileobject>
+      <filename>::1.07878-::1.49470</filename>
+      <filesize>39</filesize>
+      <tcpflow startime='2022-11-28T17:29:57.495780Z' endtime='2022-11-28T17:33:00.795568Z' mac_daddr='00:00:03:04:00:06' family='10' src_ipn='::1' dst_ipn='::1' srcport='7878' dstport='49470' packets='12' len='1103' />
+    </fileobject>
+    <fileobject>
+      <filename>::1.36244-::1.07878</filename>
+      <filesize>43</filesize>
+      <tcpflow startime='2022-11-28T17:12:42.040162Z' endtime='2022-11-28T17:29:51.670352Z' mac_daddr='00:00:03:04:00:06' family='10' src_ipn='::1' dst_ipn='::1' srcport='36244' dstport='7878' packets='12' len='1107' />
+    </fileobject>
+    <fileobject>
+      <filename>::1.07878-::1.56422</filename>
+      <filesize>105</filesize>
+      <tcpflow startime='2022-11-28T16:17:45.773256Z' endtime='2022-11-28T17:12:06.975967Z' mac_daddr='00:00:03:04:00:06' family='10' src_ipn='::1' dst_ipn='::1' srcport='7878' dstport='56422' packets='19' len='1785' />
+    </fileobject>
+    <fileobject>
+      <filename>::1.07878-::1.49212</filename>
+      <filesize>164</filesize>
+      <tcpflow startime='2022-11-28T16:17:36.355921Z' endtime='2022-11-28T17:12:06.976040Z' mac_daddr='00:00:03:04:00:06' family='10' src_ipn='::1' dst_ipn='::1' srcport='7878' dstport='49212' packets='24' len='2284' />
+    </fileobject>
+    <fileobject>
+      <filename>::1.07878-::1.53088</filename>
+      <filesize>148</filesize>
+      <tcpflow startime='2022-11-28T17:48:10.593067Z' endtime='2022-11-28T17:50:21.408723Z' mac_daddr='00:00:03:04:00:06' family='10' src_ipn='::1' dst_ipn='::1' srcport='7878' dstport='53088' packets='8' len='860' />
+    </fileobject>
+    <fileobject>
+      <filename>::1.07878-::1.38692</filename>
+      <filesize>108</filesize>
+      <tcpflow startime='2022-11-28T15:34:01.884449Z' endtime='2022-11-28T15:41:15.474355Z' mac_daddr='00:00:03:04:00:06' family='10' src_ipn='::1' dst_ipn='::1' srcport='7878' dstport='38692' packets='20' len='1876' />
+    </fileobject>
+    <fileobject>
+      <filename>::1.07878-::1.37596</filename>
+      <filesize>151</filesize>
+      <tcpflow startime='2022-11-28T17:46:19.507077Z' endtime='2022-11-28T17:50:21.981514Z' mac_daddr='00:00:03:04:00:06' family='10' src_ipn='::1' dst_ipn='::1' srcport='7878' dstport='37596' packets='17' len='1655' />
+    </fileobject>
+    <fileobject>
+      <filename>::1.38692-::1.07878</filename>
+      <filesize>162</filesize>
+      <tcpflow startime='2022-11-28T15:34:01.884439Z' endtime='2022-11-28T15:41:15.474342Z' mac_daddr='00:00:03:04:00:06' family='10' src_ipn='::1' dst_ipn='::1' srcport='38692' dstport='7878' packets='24' len='2282' />
+    </fileobject>
+    <fileobject>
+      <filename>::1.07878-::1.51632</filename>
+      <filesize>95</filesize>
+      <tcpflow startime='2022-11-28T15:41:32.683968Z' endtime='2022-11-28T15:56:22.476928Z' mac_daddr='00:00:03:04:00:06' family='10' src_ipn='::1' dst_ipn='::1' srcport='7878' dstport='51632' packets='18' len='1687' />
+    </fileobject>
+    <fileobject>
+      <filename>::1.07878-::1.57954</filename>
+      <filesize>93</filesize>
+      <tcpflow startime='2022-11-28T16:06:17.526690Z' endtime='2022-11-28T16:07:50.673952Z' mac_daddr='00:00:03:04:00:06' family='10' src_ipn='::1' dst_ipn='::1' srcport='7878' dstport='57954' packets='14' len='1333' />
+    </fileobject>
+    <fileobject>
+      <filename>::1.38510-::1.07878</filename>
+      <filesize>94</filesize>
+      <tcpflow startime='2022-11-28T17:30:06.098837Z' endtime='2022-11-28T17:32:58.126841Z' mac_daddr='00:00:03:04:00:06' family='10' src_ipn='::1' dst_ipn='::1' srcport='38510' dstport='7878' packets='12' len='1158' />
+    </fileobject>
+    <fileobject>
+      <filename>::1.07878-::1.47514</filename>
+      <filesize>95</filesize>
+      <tcpflow startime='2022-11-28T16:15:52.127778Z' endtime='2022-11-28T16:17:22.975157Z' mac_daddr='00:00:03:04:00:06' family='10' src_ipn='::1' dst_ipn='::1' srcport='7878' dstport='47514' packets='18' len='1687' />
+    </fileobject>
+    <fileobject>
+      <filename>::1.35410-::1.07878</filename>
+      <filesize>72</filesize>
+      <tcpflow startime='2022-11-28T16:16:03.812046Z' endtime='2022-11-28T16:17:22.975122Z' mac_daddr='00:00:03:04:00:06' family='10' src_ipn='::1' dst_ipn='::1' srcport='35410' dstport='7878' packets='19' len='1752' />
+    </fileobject>
+    <fileobject>
+      <filename>::1.47520-::1.07878</filename>
+      <filesize>79</filesize>
+      <tcpflow startime='2022-11-28T16:07:54.591242Z' endtime='2022-11-28T16:15:40.598967Z' mac_daddr='00:00:03:04:00:06' family='10' src_ipn='::1' dst_ipn='::1' srcport='47520' dstport='7878' packets='20' len='1847' />
+    </fileobject>
+    <fileobject>
+      <filename>::1.07878-::1.58744</filename>
+      <filesize>24</filesize>
+      <tcpflow startime='2022-11-28T15:28:13.234749Z' endtime='2022-11-28T15:33:31.394952Z' mac_daddr='00:00:03:04:00:06' family='10' src_ipn='::1' dst_ipn='::1' srcport='7878' dstport='58744' packets='5' len='472' />
+    </fileobject>
+    <fileobject>
+      <filename>::1.51632-::1.07878</filename>
+      <filesize>88</filesize>
+      <tcpflow startime='2022-11-28T15:41:32.683950Z' endtime='2022-11-28T15:56:22.476915Z' mac_daddr='00:00:03:04:00:06' family='10' src_ipn='::1' dst_ipn='::1' srcport='51632' dstport='7878' packets='24' len='2208' />
+    </fileobject>
+    <fileobject>
+      <filename>::1.57954-::1.07878</filename>
+      <filesize>55</filesize>
+      <tcpflow startime='2022-11-28T16:06:17.526673Z' endtime='2022-11-28T16:07:50.673941Z' mac_daddr='00:00:03:04:00:06' family='10' src_ipn='::1' dst_ipn='::1' srcport='57954' dstport='7878' packets='18' len='1647' />
+    </fileobject>
+    <fileobject>
+      <filename>::1.47514-::1.07878</filename>
+      <filesize>85</filesize>
+      <tcpflow startime='2022-11-28T16:15:52.127738Z' endtime='2022-11-28T16:17:22.975161Z' mac_daddr='00:00:03:04:00:06' family='10' src_ipn='::1' dst_ipn='::1' srcport='47514' dstport='7878' packets='23' len='2117' />
+    </fileobject>
+    <fileobject>
+      <filename>::1.58756-::1.07878</filename>
+      <filesize>138</filesize>
+      <tcpflow startime='2022-11-28T15:28:17.025816Z' endtime='2022-11-28T15:33:31.897415Z' mac_daddr='00:00:03:04:00:06' family='10' src_ipn='::1' dst_ipn='::1' srcport='58756' dstport='7878' packets='18' len='1730' />
+    </fileobject>
+    <fileobject>
+      <filename>::1.07878-::1.37500</filename>
+      <filesize>67</filesize>
+      <tcpflow startime='2022-11-28T15:26:29.082426Z' endtime='2022-11-28T15:33:34.146870Z' mac_daddr='00:00:03:04:00:06' family='10' src_ipn='::1' dst_ipn='::1' srcport='7878' dstport='37500' packets='15' len='1395' />
+    </fileobject>
+    <fileobject>
+      <filename>::1.07878-::1.58756</filename>
+      <filesize>123</filesize>
+      <tcpflow startime='2022-11-28T15:28:17.025846Z' endtime='2022-11-28T15:33:31.897426Z' mac_daddr='00:00:03:04:00:06' family='10' src_ipn='::1' dst_ipn='::1' srcport='7878' dstport='58756' packets='17' len='1627' />
+    </fileobject>
+    <fileobject>
+      <filename>::1.37500-::1.07878</filename>
+      <filesize>93</filesize>
+      <tcpflow startime='2022-11-28T15:26:29.082404Z' endtime='2022-11-28T15:33:34.146839Z' mac_daddr='00:00:03:04:00:06' family='10' src_ipn='::1' dst_ipn='::1' srcport='37500' dstport='7878' packets='19' len='1773' />
+    </fileobject>
+    <fileobject>
+      <filename>::1.07878-::1.37996</filename>
+      <filesize>174</filesize>
+      <tcpflow startime='2022-11-28T15:33:48.777572Z' endtime='2022-11-28T15:41:14.883551Z' mac_daddr='00:00:03:04:00:06' family='10' src_ipn='::1' dst_ipn='::1' srcport='7878' dstport='37996' packets='22' len='2118' />
+    </fileobject>
+    <fileobject>
+      <filename>::1.07878-::1.52982</filename>
+      <filesize>86</filesize>
+      <tcpflow startime='2022-11-28T15:26:12.170939Z' endtime='2022-11-28T15:33:33.655420Z' mac_daddr='00:00:03:04:00:06' family='10' src_ipn='::1' dst_ipn='::1' srcport='7878' dstport='52982' packets='15' len='1414' />
+    </fileobject>
+    <fileobject>
+      <filename>::1.37996-::1.07878</filename>
+      <filesize>80</filesize>
+      <tcpflow startime='2022-11-28T15:33:48.777554Z' endtime='2022-11-28T15:41:14.883512Z' mac_daddr='00:00:03:04:00:06' family='10' src_ipn='::1' dst_ipn='::1' srcport='37996' dstport='7878' packets='27' len='2464' />
+    </fileobject>
+    <fileobject>
+      <filename>::1.52982-::1.07878</filename>
+      <filesize>55</filesize>
+      <tcpflow startime='2022-11-28T15:26:12.170918Z' endtime='2022-11-28T15:33:33.655392Z' mac_daddr='00:00:03:04:00:06' family='10' src_ipn='::1' dst_ipn='::1' srcport='52982' dstport='7878' packets='20' len='1823' />
+    </fileobject>
+    <fileobject>
+      <filename>::1.57448-::1.07878</filename>
+      <filesize>122</filesize>
+      <tcpflow startime='2022-11-28T15:56:53.951828Z' endtime='2022-11-28T16:05:58.279417Z' mac_daddr='00:00:03:04:00:06' family='10' src_ipn='::1' dst_ipn='::1' srcport='57448' dstport='7878' packets='21' len='1978' />
+    </fileobject>
+    <fileobject>
+      <filename>::1.44648-::1.07878</filename>
+      <filesize>269</filesize>
+      <tcpflow startime='2022-11-28T16:18:14.302655Z' endtime='2022-11-28T17:12:32.604412Z' mac_daddr='00:00:03:04:00:06' family='10' src_ipn='::1' dst_ipn='::1' srcport='44648' dstport='7878' packets='24' len='2389' />
+    </fileobject>
+    <fileobject>
+      <filename>::1.55268-::1.07878</filename>
+      <filesize>99</filesize>
+      <tcpflow startime='2022-11-28T15:41:44.597194Z' endtime='2022-11-28T15:56:22.977295Z' mac_daddr='00:00:03:04:00:06' family='10' src_ipn='::1' dst_ipn='::1' srcport='55268' dstport='7878' packets='20' len='1867' />
+    </fileobject>
+    <fileobject>
+      <filename>::1.07878-::1.44648</filename>
+      <filesize>132</filesize>
+      <tcpflow startime='2022-11-28T16:18:14.302665Z' endtime='2022-11-28T17:12:32.604444Z' mac_daddr='00:00:03:04:00:06' family='10' src_ipn='::1' dst_ipn='::1' srcport='7878' dstport='44648' packets='23' len='2164' />
+    </fileobject>
+    <fileobject>
+      <filename>::1.07878-::1.55268</filename>
+      <filesize>96</filesize>
+      <tcpflow startime='2022-11-28T15:41:44.597207Z' endtime='2022-11-28T15:56:22.977317Z' mac_daddr='00:00:03:04:00:06' family='10' src_ipn='::1' dst_ipn='::1' srcport='7878' dstport='55268' packets='17' len='1600' />
+    </fileobject>
+    <fileobject>
+      <filename>::1.07878-::1.44156</filename>
+      <filesize>88850</filesize>
+      <tcpflow startime='2022-11-28T17:50:57.375730Z' endtime='2022-11-28T17:53:16.005505Z' mac_daddr='00:00:03:04:00:06' family='10' src_ipn='::1' dst_ipn='::1' srcport='7878' dstport='44156' packets='2037' len='268114' />
+    </fileobject>
+    <fileobject>
+      <filename>::1.49470-::1.07878</filename>
+      <filesize>50</filesize>
+      <tcpflow startime='2022-11-28T17:29:57.495755Z' endtime='2022-11-28T17:33:00.795549Z' mac_daddr='00:00:03:04:00:06' family='10' src_ipn='::1' dst_ipn='::1' srcport='49470' dstport='7878' packets='16' len='1466' />
+    </fileobject>
+    <fileobject>
+      <filename>::1.54426-::1.07878</filename>
+      <filesize>66</filesize>
+      <tcpflow startime='2022-11-28T15:56:36.140474Z' endtime='2022-11-28T16:05:59.236081Z' mac_daddr='00:00:03:04:00:06' family='10' src_ipn='::1' dst_ipn='::1' srcport='54426' dstport='7878' packets='24' len='2186' />
+    </fileobject>
+    <fileobject>
+      <filename>::1.57940-::1.07878</filename>
+      <filesize>84</filesize>
+      <tcpflow startime='2022-11-28T16:06:09.588517Z' endtime='2022-11-28T16:07:49.116760Z' mac_daddr='00:00:03:04:00:06' family='10' src_ipn='::1' dst_ipn='::1' srcport='57940' dstport='7878' packets='18' len='1676' />
+    </fileobject>
+    <fileobject>
+      <filename>::1.07878-::1.47520</filename>
+      <filesize>80</filesize>
+      <tcpflow startime='2022-11-28T16:07:54.591262Z' endtime='2022-11-28T16:15:40.598980Z' mac_daddr='00:00:03:04:00:06' family='10' src_ipn='::1' dst_ipn='::1' srcport='7878' dstport='47520' packets='15' len='1408' />
+    </fileobject>
+    <fileobject>
+      <filename>::1.51170-::1.07878</filename>
+      <filesize>72</filesize>
+      <tcpflow startime='2022-11-28T16:08:10.020374Z' endtime='2022-11-28T16:15:41.047316Z' mac_daddr='00:00:03:04:00:06' family='10' src_ipn='::1' dst_ipn='::1' srcport='51170' dstport='7878' packets='19' len='1752' />
+    </fileobject>
+    <fileobject>
+      <filename>::1.44156-::1.07878</filename>
+      <filesize>88864</filesize>
+      <tcpflow startime='2022-11-28T17:50:57.375714Z' endtime='2022-11-28T17:53:16.048207Z' mac_daddr='00:00:03:04:00:06' family='10' src_ipn='::1' dst_ipn='::1' srcport='44156' dstport='7878' packets='2038' len='268216' />
+    </fileobject>
+    <fileobject>
+      <filename>::1.07878-::1.51170</filename>
+      <filesize>93</filesize>
+      <tcpflow startime='2022-11-28T16:08:10.020392Z' endtime='2022-11-28T16:15:41.047337Z' mac_daddr='00:00:03:04:00:06' family='10' src_ipn='::1' dst_ipn='::1' srcport='7878' dstport='51170' packets='15' len='1421' />
+    </fileobject>
+    <fileobject>
+      <filename>::1.07878-::1.35410</filename>
+      <filesize>93</filesize>
+      <tcpflow startime='2022-11-28T16:16:03.812069Z' endtime='2022-11-28T16:17:22.975102Z' mac_daddr='00:00:03:04:00:06' family='10' src_ipn='::1' dst_ipn='::1' srcport='7878' dstport='35410' packets='16' len='1509' />
+    </fileobject>
+  </configuration>
+  <summary />
+  <open_fds_at_end>0</open_fds_at_end>
+  <max_open_flows>0</max_open_flows>
+  <total_flows>64</total_flows>
+  <flow_map_size>49</flow_map_size>
+  <total_packets>9125</total_packets>
+  <rusage>
+    <utime>0.163198</utime>
+    <stime>0.108847</stime>
+    <maxrss>12708</maxrss>
+    <minflt>1385</minflt>
+    <majflt>28</majflt>
+    <nswap>0</nswap>
+    <inblock>4216</inblock>
+    <oublock>120</oublock>
+    <clocktime>8893.412298</clocktime>
+  </rusage>
+</dfxml>

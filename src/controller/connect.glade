@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Generated with glade 3.40.0 -->
+<interface>
+  <requires lib="gtk+" version="3.24"/>
+  <object class="GtkWindow" id="connect_window">
+    <property name="width-request">350</property>
+    <property name="height-request">350</property>
+    <property name="can-focus">False</property>
+    <property name="window-position">center</property>
+    <child>
+      <object class="GtkFixed">
+        <property name="visible">True</property>
+        <property name="can-focus">False</property>
+        <child>
+          <object class="GtkButton" id="connect_button">
+            <property name="label" translatable="yes">connect</property>
+            <property name="width-request">100</property>
+            <property name="height-request">80</property>
+            <property name="visible">True</property>
+            <property name="can-focus">True</property>
+            <property name="receives-default">True</property>
+          </object>
+          <packing>
+            <property name="x">140</property>
+            <property name="y">250</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkLabel" id="nick_label">
+            <property name="width-request">80</property>
+            <property name="height-request">35</property>
+            <property name="visible">True</property>
+            <property name="can-focus">False</property>
+            <property name="label" translatable="yes">IP:</property>
+          </object>
+          <packing>
+            <property name="x">20</property>
+            <property name="y">67</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkLabel" id="user_label">
+            <property name="width-request">80</property>
+            <property name="height-request">35</property>
+            <property name="visible">True</property>
+            <property name="can-focus">False</property>
+            <property name="label" translatable="yes">PORT:</property>
+          </object>
+          <packing>
+            <property name="x">20</property>
+            <property name="y">107</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkLabel" id="error_label">
+            <property name="width-request">250</property>
+            <property name="height-request">35</property>
+            <property name="visible">True</property>
+            <property name="can-focus">False</property>
+          </object>
+          <packing>
+            <property name="x">50</property>
+            <property name="y">197</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkEntry" id="ip_input">
+            <property name="width-request">250</property>
+            <property name="height-request">35</property>
+            <property name="visible">True</property>
+            <property name="can-focus">True</property>
+            <property name="max-length">30</property>
+          </object>
+          <packing>
+            <property name="x">90</property>
+            <property name="y">73</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkEntry" id="port_input">
+            <property name="width-request">250</property>
+            <property name="height-request">35</property>
+            <property name="visible">True</property>
+            <property name="can-focus">True</property>
+            <property name="max-length">10</property>
+          </object>
+          <packing>
+            <property name="x">90</property>
+            <property name="y">113</property>
+          </packing>
+        </child>
+      </object>
+    </child>
+  </object>
+</interface>

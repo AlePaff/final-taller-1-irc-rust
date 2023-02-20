@@ -1,0 +1,7 @@
+name:server_cinco
+password:5555
+port:7882
+ip:localhost
+trusted_servers_path:./trusted_servers.csv
+operators_path:./operators_test.csv
+log_path:./logs/log5.txt

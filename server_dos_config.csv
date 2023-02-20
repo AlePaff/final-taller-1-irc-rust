@@ -1,0 +1,7 @@
+name:server_dos
+password:2222
+port:7879
+ip:localhost
+trusted_servers_path:./trusted_servers.csv
+operators_path:./operators_test.csv
+log_path:./logs/log2.txt

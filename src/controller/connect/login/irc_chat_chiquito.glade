@@ -1,0 +1,443 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Generated with glade 3.40.0 -->
+<interface>
+  <requires lib="gtk+" version="3.24"/>
+  <object class="GtkTextBuffer"/>
+  <object class="GtkImage" id="image1">
+    <property name="visible">True</property>
+    <property name="can-focus">False</property>
+    <property name="stock">gtk-dialog-authentication</property>
+  </object>
+  <object class="GtkImage" id="image10">
+    <property name="visible">True</property>
+    <property name="can-focus">False</property>
+    <property name="stock">gtk-edit</property>
+  </object>
+  <object class="GtkImage" id="image11">
+    <property name="visible">True</property>
+    <property name="can-focus">False</property>
+    <property name="stock">gtk-cancel</property>
+  </object>
+  <object class="GtkImage" id="image12">
+    <property name="visible">True</property>
+    <property name="can-focus">False</property>
+    <property name="stock">gtk-add</property>
+  </object>
+  <object class="GtkImage" id="image13">
+    <property name="visible">True</property>
+    <property name="can-focus">False</property>
+    <property name="stock">gtk-strikethrough</property>
+  </object>
+  <object class="GtkImage" id="image14">
+    <property name="visible">True</property>
+    <property name="can-focus">False</property>
+    <property name="stock">gtk-edit</property>
+  </object>
+  <object class="GtkImage" id="image15">
+    <property name="visible">True</property>
+    <property name="can-focus">False</property>
+    <property name="stock">gtk-orientation-portrait</property>
+  </object>
+  <object class="GtkImage" id="image16">
+    <property name="visible">True</property>
+    <property name="can-focus">False</property>
+    <property name="stock">gtk-cancel</property>
+  </object>
+  <object class="GtkImage" id="image17">
+    <property name="visible">True</property>
+    <property name="can-focus">False</property>
+    <property name="stock">gtk-info</property>
+  </object>
+  <object class="GtkImage" id="image18">
+    <property name="visible">True</property>
+    <property name="can-focus">False</property>
+    <property name="stock">gtk-italic</property>
+  </object>
+  <object class="GtkImage" id="image19">
+    <property name="visible">True</property>
+    <property name="can-focus">False</property>
+    <property name="stock">gtk-italic</property>
+  </object>
+  <object class="GtkImage" id="image2">
+    <property name="visible">True</property>
+    <property name="can-focus">False</property>
+    <property name="stock">gtk-disconnect</property>
+  </object>
+  <object class="GtkImage" id="image3">
+    <property name="visible">True</property>
+    <property name="can-focus">False</property>
+    <property name="stock">gtk-quit</property>
+  </object>
+  <object class="GtkImage" id="image4">
+    <property name="visible">True</property>
+    <property name="can-focus">False</property>
+    <property name="stock">gtk-edit</property>
+  </object>
+  <object class="GtkImage" id="image5">
+    <property name="visible">True</property>
+    <property name="can-focus">False</property>
+    <property name="stock">gtk-close</property>
+  </object>
+  <object class="GtkImage" id="image6">
+    <property name="visible">True</property>
+    <property name="can-focus">False</property>
+    <property name="stock">gtk-edit</property>
+  </object>
+  <object class="GtkImage" id="image7">
+    <property name="visible">True</property>
+    <property name="can-focus">False</property>
+    <property name="stock">gtk-edit</property>
+  </object>
+  <object class="GtkImage" id="image8">
+    <property name="visible">True</property>
+    <property name="can-focus">False</property>
+    <property name="stock">gtk-go-forward</property>
+  </object>
+  <object class="GtkImage" id="image9">
+    <property name="visible">True</property>
+    <property name="can-focus">False</property>
+    <property name="stock">gtk-go-forward</property>
+  </object>
+  <object class="GtkWindow" id="window">
+    <property name="can-focus">False</property>
+    <property name="window-position">center</property>
+    <child>
+      <object class="GtkFixed" id="container">
+        <property name="width-request">-1</property>
+        <property name="visible">True</property>
+        <property name="can-focus">False</property>
+        <child>
+          <object class="GtkButton" id="send_button">
+            <property name="label" translatable="yes">send</property>
+            <property name="width-request">78</property>
+            <property name="height-request">32</property>
+            <property name="visible">True</property>
+            <property name="can-focus">True</property>
+            <property name="receives-default">True</property>
+          </object>
+          <packing>
+            <property name="x">402</property>
+            <property name="y">440</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkEntry" id="input_box">
+            <property name="width-request">400</property>
+            <property name="height-request">32</property>
+            <property name="visible">True</property>
+            <property name="can-focus">True</property>
+            <property name="max-length">256</property>
+          </object>
+          <packing>
+            <property name="y">440</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkTextView" id="chat_display">
+            <property name="width-request">481</property>
+            <property name="height-request">400</property>
+            <property name="visible">True</property>
+            <property name="can-focus">True</property>
+            <property name="editable">False</property>
+          </object>
+          <packing>
+            <property name="y">36</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkLabel" id="chat_title_label">
+            <property name="width-request">200</property>
+            <property name="height-request">35</property>
+            <property name="visible">True</property>
+            <property name="can-focus">False</property>
+          </object>
+          <packing>
+            <property name="x">280</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkLabel" id="RPL_label">
+            <property name="name">RPL_label</property>
+            <property name="width-request">250</property>
+            <property name="height-request">35</property>
+            <property name="visible">True</property>
+            <property name="can-focus">False</property>
+          </object>
+          <packing>
+            <property name="x">5</property>
+          </packing>
+        </child>
+      </object>
+    </child>
+    <child type="titlebar">
+      <object class="GtkMenuBar" id="menubar">
+        <property name="visible">True</property>
+        <property name="can-focus">False</property>
+        <child>
+          <object class="GtkMenuItem" id="menu_chats">
+            <property name="visible">True</property>
+            <property name="can-focus">False</property>
+            <property name="label" translatable="yes">Chats</property>
+            <property name="use-underline">True</property>
+            <child type="submenu">
+              <object class="GtkMenu">
+                <property name="visible">True</property>
+                <property name="can-focus">False</property>
+                <child>
+                  <object class="GtkImageMenuItem" id="chats_users">
+                    <property name="label" translatable="yes">Users</property>
+                    <property name="visible">True</property>
+                    <property name="can-focus">False</property>
+                    <property name="image">image9</property>
+                    <property name="use-stock">False</property>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkImageMenuItem" id="chats_channels">
+                    <property name="label" translatable="yes">Channels</property>
+                    <property name="visible">True</property>
+                    <property name="can-focus">False</property>
+                    <property name="image">image8</property>
+                    <property name="use-stock">False</property>
+                  </object>
+                </child>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="GtkMenuItem" id="menu_servers">
+            <property name="visible">True</property>
+            <property name="can-focus">False</property>
+            <property name="label" translatable="yes">_Servers</property>
+            <property name="use-underline">True</property>
+            <child type="submenu">
+              <object class="GtkMenu">
+                <property name="visible">True</property>
+                <property name="can-focus">False</property>
+                <child>
+                  <object class="GtkImageMenuItem" id="servers_oper_login">
+                    <property name="label" translatable="yes">Oper login</property>
+                    <property name="visible">True</property>
+                    <property name="can-focus">False</property>
+                    <property name="image">image1</property>
+                    <property name="use-stock">False</property>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkImageMenuItem" id="servers_disconnect_from">
+                    <property name="label" translatable="yes">Disconnect from...</property>
+                    <property name="visible">True</property>
+                    <property name="can-focus">False</property>
+                    <property name="image">image2</property>
+                    <property name="use-stock">False</property>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkImageMenuItem" id="servers_shutdown">
+                    <property name="label" translatable="yes">ShutDown</property>
+                    <property name="visible">True</property>
+                    <property name="can-focus">False</property>
+                    <property name="image">image3</property>
+                    <property name="use-stock">False</property>
+                  </object>
+                </child>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="GtkMenuItem" id="menu_channels">
+            <property name="visible">True</property>
+            <property name="can-focus">False</property>
+            <property name="label" translatable="yes">_Channels</property>
+            <property name="use-underline">True</property>
+            <child type="submenu">
+              <object class="GtkMenu">
+                <property name="visible">True</property>
+                <property name="can-focus">False</property>
+                <child>
+                  <object class="GtkImageMenuItem" id="channels_create_channel">
+                    <property name="label" translatable="yes">Create</property>
+                    <property name="visible">True</property>
+                    <property name="can-focus">False</property>
+                    <property name="image">image4</property>
+                    <property name="use-stock">False</property>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkImageMenuItem" id="channels_leave">
+                    <property name="label" translatable="yes">Leave</property>
+                    <property name="visible">True</property>
+                    <property name="can-focus">False</property>
+                    <property name="image">image16</property>
+                    <property name="use-stock">False</property>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkImageMenuItem" id="channels_invite">
+                    <property name="label" translatable="yes">Invite</property>
+                    <property name="visible">True</property>
+                    <property name="can-focus">False</property>
+                    <property name="image">image19</property>
+                    <property name="use-stock">False</property>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkImageMenuItem" id="channels_kick_user">
+                    <property name="label" translatable="yes">Kick</property>
+                    <property name="visible">True</property>
+                    <property name="can-focus">False</property>
+                    <property name="image">image5</property>
+                    <property name="use-stock">False</property>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkImageMenuItem" id="channels_set_topic">
+                    <property name="label" translatable="yes">Set Topic</property>
+                    <property name="visible">True</property>
+                    <property name="can-focus">False</property>
+                    <property name="image">image6</property>
+                    <property name="use-stock">False</property>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkImageMenuItem" id="channels_mode">
+                    <property name="label" translatable="yes">Mode</property>
+                    <property name="visible">True</property>
+                    <property name="can-focus">False</property>
+                    <property name="image">image7</property>
+                    <property name="use-stock">False</property>
+                    <child type="submenu">
+                      <object class="GtkMenu">
+                        <property name="visible">True</property>
+                        <property name="can-focus">False</property>
+                        <child>
+                          <object class="GtkImageMenuItem" id="modes_give_mod">
+                            <property name="label" translatable="yes">Give mod</property>
+                            <property name="visible">True</property>
+                            <property name="can-focus">False</property>
+                            <property name="image">image12</property>
+                            <property name="use-stock">False</property>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="GtkImageMenuItem" id="modes_set_limit">
+                            <property name="label" translatable="yes">Set limit</property>
+                            <property name="visible">True</property>
+                            <property name="can-focus">False</property>
+                            <property name="image">image14</property>
+                            <property name="use-stock">False</property>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="GtkImageMenuItem" id="modes_set_secret">
+                            <property name="label" translatable="yes">Set secret</property>
+                            <property name="visible">True</property>
+                            <property name="can-focus">False</property>
+                            <property name="image">image13</property>
+                            <property name="use-stock">False</property>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="GtkImageMenuItem" id="modes_unset_secret">
+                            <property name="label" translatable="yes">Unset secret</property>
+                            <property name="visible">True</property>
+                            <property name="can-focus">False</property>
+                            <property name="image">image15</property>
+                            <property name="use-stock">False</property>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="GtkImageMenuItem" id="modes_set_invite_only">
+                            <property name="label" translatable="yes">Set invite only</property>
+                            <property name="visible">True</property>
+                            <property name="can-focus">False</property>
+                            <property name="image">image18</property>
+                            <property name="use-stock">False</property>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="GtkImageMenuItem" id="modes_unset_invite_only">
+                            <property name="label" translatable="yes">Unset invite only</property>
+                            <property name="visible">True</property>
+                            <property name="can-focus">False</property>
+                            <property name="image">image17</property>
+                            <property name="use-stock">False</property>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="GtkImageMenuItem">
+                            <property name="visible">True</property>
+                            <property name="can-focus">False</property>
+                            <property name="use-underline">True</property>
+                            <property name="use-stock">True</property>
+                          </object>
+                        </child>
+                      </object>
+                    </child>
+                  </object>
+                </child>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="GtkMenuItem" id="menu_away">
+            <property name="visible">True</property>
+            <property name="can-focus">False</property>
+            <property name="label" translatable="yes">_Away</property>
+            <property name="use-underline">True</property>
+            <child type="submenu">
+              <object class="GtkMenu">
+                <property name="visible">True</property>
+                <property name="can-focus">False</property>
+                <child>
+                  <object class="GtkImageMenuItem" id="set_away">
+                    <property name="label" translatable="yes">set</property>
+                    <property name="visible">True</property>
+                    <property name="can-focus">False</property>
+                    <property name="image">image10</property>
+                    <property name="use-stock">False</property>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkImageMenuItem" id="unset_away">
+                    <property name="label" translatable="yes">unset</property>
+                    <property name="visible">True</property>
+                    <property name="can-focus">False</property>
+                    <property name="image">image11</property>
+                    <property name="use-stock">False</property>
+                  </object>
+                </child>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="GtkMenuItem" id="menu_help">
+            <property name="visible">True</property>
+            <property name="can-focus">False</property>
+            <property name="label" translatable="yes">_Help</property>
+            <property name="use-underline">True</property>
+            <child type="submenu">
+              <object class="GtkMenu">
+                <property name="visible">True</property>
+                <property name="can-focus">False</property>
+                <child>
+                  <object class="GtkImageMenuItem">
+                    <property name="label">gtk-about</property>
+                    <property name="visible">True</property>
+                    <property name="can-focus">False</property>
+                    <property name="use-underline">True</property>
+                    <property name="use-stock">True</property>
+                  </object>
+                </child>
+              </object>
+            </child>
+          </object>
+        </child>
+      </object>
+    </child>
+  </object>
+</interface>
