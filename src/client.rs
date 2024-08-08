@@ -58,11 +58,13 @@ pub struct ClientC {
 }
 
 impl ClientC {
-    #![allow(dead_code)]
+    // #![allow(dead_code)]
     pub fn new(address: String, port: String) -> Result<ClientC, Box<dyn Error>> {
         let server = TcpStream::connect(address + ":" + &port)?;
         server.set_read_timeout(Some(Duration::from_millis(100)))?;
         let channels = HashSet::new();
+        
+        println!("CLIENTE CREADO!!");
         Ok(ClientC {
             //logger_file_path,
             server,
@@ -86,12 +88,24 @@ impl ClientC {
         return self.read_from_stream().expect("read failed");
     }
 
+
+
+
+
+
+
     /// sends a privmsg, writing the PRIVMSG command to the server
     pub fn send_privmsg(&mut self, to: String, message: String) {
         self.server
             .write_all(format!("PRIVMSG {} {}\n", to, message).as_bytes())
             .expect("server write failed when writing privmsg");
     }
+
+
+
+
+
+
 
     pub fn make_oper(&mut self, channel: String, nick: String) {
         self.server

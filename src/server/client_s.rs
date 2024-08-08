@@ -19,7 +19,6 @@ use std::time::Duration;
 #[derive(Clone)]
 /// Struct representing a conection to the server.
 /// Each ClientS lives in it's own server thread.
-///
 pub struct ClientS {
     pass: Option<String>,
     nick: Option<String>,

@@ -24,3 +24,11 @@ path = "src/server-main.rs"
 [[bin]]
 name = "client-gtk"
 path = "src/main_gtk.rs"
+
+[[bin]]
+name = "cl1"
+path = "pruebas_final/00_client.rs"
+
+[[bin]]
+name = "cl2"
+path = "pruebas_final/00_server.rs"
