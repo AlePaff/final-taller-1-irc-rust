@@ -6,8 +6,10 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-gtk = "^0"#{ git = "https://github.com/gtk-rs/gtk3-rs.git" }
-glib = "^0"
+# gtk = "^0"#{ git = "https://github.com/gtk-rs/gtk3-rs.git" }
+# glib = "^0"
+gtk = "0.17.0"
+glib = "0.17.2"
 
 #[dependencies]
 #glib = { version = "0.13", git = "https://github.com/gtk-rs/gtk-rs-core.git"}
