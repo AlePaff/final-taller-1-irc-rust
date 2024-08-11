@@ -72,6 +72,7 @@ impl ClientS {
     /// Main loop of the client on the server.
     /// Reads the message from stream, builds it and executes the commands
     pub fn run(&mut self) -> std::io::Result<()> {
+        println!("Cliente iniciado. Esperando mensajes.");
         while let Ok(line) = self.read_from_stream() {
             let message = Message::build(line).expect("Error reading from stream");
             if let Command::Invalid(_) = message.command {
@@ -93,6 +94,8 @@ impl ClientS {
         let mut char = [b'\n'];
 
         if let Some(stream) = self.stream.clone() {
+            // lee cada caracter que escriba el usuario
+            // detiene el while cuando el usuario aprete 'enter'
             while char[0] == b'\n' {
                 thread::sleep(Duration::from_nanos(1));
                 let stream = stream.lock();
@@ -101,6 +104,7 @@ impl ClientS {
                         "Connection closed".into(),
                     )));
                 }
+                // guarda lo leido del buffer en 'char'
                 if stream
                     .expect("Error finding stream")
                     .read_exact(&mut char)
@@ -117,6 +121,7 @@ impl ClientS {
                     )))
                 }
             };
+            // lee caracter por caracter hasta que haya un salto de linea
             while char[0] != b'\n' {
                 line.push_str(&String::from_utf8(Vec::from(char))?);
                 char = [b'\n'];
@@ -180,12 +185,14 @@ impl ClientS {
     /// and will return the appropiate response.
     /// If USER was already executed correctly will register the user
     fn execute_nick(&mut self, new_nick: String, hopcount: i32) -> Result<(), Box<dyn Error>> {
+        // si se trata de un servidor
         if self.server_name.is_some() {
             self.last_nick = new_nick.clone();
             self.last_hopcount = hopcount;
             self.nick = Some(new_nick);
             return Ok(());
         }
+        // si ya existe el usuario lo dropea
         if self.is_registered() {
             if let Some(nick) = self.nick.clone() {
                 self.clients
@@ -195,11 +202,13 @@ impl ClientS {
             }
             self.status = ClientStatus::Unregistered;
         }
+        // si ya existe y está conectado tira error
         if let Ok(mut client_guard) = self.clients.lock() {
             if client_guard.contains_client(&new_nick) {
                 return self.return_code((app_errors::ERR_NICKCOLLISION, vec![new_nick]));
             }
         }
+        // agrega el cliente o servidor
         if let Some(_user) = self.user.clone() {
             let client_nick = new_nick.clone();
             if let Some(stream) = self.stream.clone() {
@@ -234,6 +243,7 @@ impl ClientS {
     /// If PASS and NICK were already given will register the user.
     fn execute_user(&mut self, username: String, realname: String) -> Result<(), Box<dyn Error>> {
         let result;
+        // si es un servidor
         if self.server_name.is_some() {
             self.user = Some(username);
             self.realname = Some(realname);
@@ -254,6 +264,8 @@ impl ClientS {
                 Err(error) => return self.return_code(error),
             }
         }
+
+        // si es un usuario
         if self.is_registered() {
             return self.return_code((app_errors::ERR_ALREADYREGISTRED, vec![]));
         }

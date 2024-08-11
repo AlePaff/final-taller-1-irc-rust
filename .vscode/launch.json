@@ -1,0 +1,234 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        // {
+        //     "type": "lldb",
+        //     "request": "launch",
+        //     "name": "Debug unit tests in library 'irc_2c_2022'",
+        //     "cargo": {
+        //         "args": [
+        //             "test",
+        //             "--no-run",
+        //             "--lib",
+        //             "--package=irc_2c_2022"
+        //         ],
+        //         "filter": {
+        //             "name": "irc_2c_2022",
+        //             "kind": "lib"
+        //         }
+        //     },
+        //     "args": [],
+        //     "cwd": "${workspaceFolder}"
+        // },
+        // {
+        //     "type": "lldb",
+        //     "request": "launch",
+        //     "name": "Debug executable 'cl1'",
+        //     "cargo": {
+        //         "args": [
+        //             "build",
+        //             "--bin=cl1",
+        //             "--package=irc_2c_2022"
+        //         ],
+        //         "filter": {
+        //             "name": "cl1",
+        //             "kind": "bin"
+        //         }
+        //     },
+        //     "args": [],
+        //     "cwd": "${workspaceFolder}"
+        // },
+        // {
+        //     "type": "lldb",
+        //     "request": "launch",
+        //     "name": "Debug unit tests in executable 'cl1'",
+        //     "cargo": {
+        //         "args": [
+        //             "test",
+        //             "--no-run",
+        //             "--bin=cl1",
+        //             "--package=irc_2c_2022"
+        //         ],
+        //         "filter": {
+        //             "name": "cl1",
+        //             "kind": "bin"
+        //         }
+        //     },
+        //     "args": [],
+        //     "cwd": "${workspaceFolder}"
+        // },
+        // {
+        //     "type": "lldb",
+        //     "request": "launch",
+        //     "name": "Debug executable 'cl2'",
+        //     "cargo": {
+        //         "args": [
+        //             "build",
+        //             "--bin=cl2",
+        //             "--package=irc_2c_2022"
+        //         ],
+        //         "filter": {
+        //             "name": "cl2",
+        //             "kind": "bin"
+        //         }
+        //     },
+        //     "args": [],
+        //     "cwd": "${workspaceFolder}"
+        // },
+        // {
+        //     "type": "lldb",
+        //     "request": "launch",
+        //     "name": "Debug unit tests in executable 'cl2'",
+        //     "cargo": {
+        //         "args": [
+        //             "test",
+        //             "--no-run",
+        //             "--bin=cl2",
+        //             "--package=irc_2c_2022"
+        //         ],
+        //         "filter": {
+        //             "name": "cl2",
+        //             "kind": "bin"
+        //         }
+        //     },
+        //     "args": [],
+        //     "cwd": "${workspaceFolder}"
+        // },
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "Debuguear 'client' server 1",
+            "cargo": {
+                "args": [
+                    "build",
+                    "--bin=client",
+                    "--package=irc_2c_2022"
+                ],
+                "filter": {
+                    "name": "client",
+                    "kind": "bin"
+                }
+            },
+            "args": [
+                "localhost",
+                "7878"
+            ],
+            "cwd": "${workspaceFolder}"
+        },
+        // {
+        //     "type": "lldb",
+        //     "request": "launch",
+        //     "name": "Debug unit tests in executable 'client'",
+        //     "cargo": {
+        //         "args": [
+        //             "test",
+        //             "--no-run",
+        //             "--bin=client",
+        //             "--package=irc_2c_2022"
+        //         ],
+        //         "filter": {
+        //             "name": "client",
+        //             "kind": "bin"
+        //         }
+        //     },
+        //     "args": [],
+        //     "cwd": "${workspaceFolder}"
+        // },
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "Debuguear 'client-gtk'",
+            "cargo": {
+                "args": [
+                    "build",
+                    "--bin=client-gtk",
+                    "--package=irc_2c_2022"
+                ],
+                "filter": {
+                    "name": "client-gtk",
+                    "kind": "bin"
+                }
+            },
+            "args": [],
+            "cwd": "${workspaceFolder}"
+        },
+        // {
+        //     "type": "lldb",
+        //     "request": "launch",
+        //     "name": "Debug unit tests in executable 'client-gtk'",
+        //     "cargo": {
+        //         "args": [
+        //             "test",
+        //             "--no-run",
+        //             "--bin=client-gtk",
+        //             "--package=irc_2c_2022"
+        //         ],
+        //         "filter": {
+        //             "name": "client-gtk",
+        //             "kind": "bin"
+        //         }
+        //     },
+        //     "args": [],
+        //     "cwd": "${workspaceFolder}"
+        // },
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "Debuguear servidor 'server' 1",
+            "cargo": {
+                "args": [
+                    "build",
+                    "--bin=server",
+                    "--package=irc_2c_2022"
+                ],
+                "filter": {
+                    "name": "server",
+                    "kind": "bin"
+                }
+            },
+            "args": ["server_uno_config.csv"],
+            "cwd": "${workspaceFolder}"
+        },
+        // {
+        //     "type": "lldb",
+        //     "request": "launch",
+        //     "name": "Debug unit tests in executable 'server'",
+        //     "cargo": {
+        //         "args": [
+        //             "test",
+        //             "--no-run",
+        //             "--bin=server",
+        //             "--package=irc_2c_2022"
+        //         ],
+        //         "filter": {
+        //             "name": "server",
+        //             "kind": "bin"
+        //         }
+        //     },
+        //     "args": [],
+        //     "cwd": "${workspaceFolder}"
+        // },
+        // {
+        //     "type": "lldb",
+        //     "request": "launch",
+        //     "name": "Debug integration test 'integration_test'",
+        //     "cargo": {
+        //         "args": [
+        //             "test",
+        //             "--no-run",
+        //             "--test=integration_test",
+        //             "--package=irc_2c_2022"
+        //         ],
+        //         "filter": {
+        //             "name": "integration_test",
+        //             "kind": "test"
+        //         }
+        //     },
+        //     "args": [],
+        //     "cwd": "${workspaceFolder}"
+        // }
+    ]
+}

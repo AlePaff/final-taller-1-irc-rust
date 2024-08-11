@@ -57,6 +57,8 @@ impl ClientsInfo {
         msg: String,
         server_name: Option<String>,
     ) -> DefaultAndError {
+        // para enviar mensajes broadcast en el server
+        // Ej. enviar a todos los  $*.fi.uba el mensaje 'server en mantenimietno'
         if to.starts_with('&') | to.starts_with('#') {
             // if it is a channel
             if !self.channels.contains_key(&to) {
@@ -67,6 +69,7 @@ impl ClientsInfo {
                 .get_mut(&to)
                 .expect("Error getting reciver message during privmsg");
             channel.send(from.clone(), msg.clone())?;
+
             //INFORMO A LOS VECINOS
             for (neighbour_name, server) in self.servers.iter() {
                 let ForeignServer(stream, _hopcount, _info, _path) = server;
@@ -85,10 +88,12 @@ impl ClientsInfo {
             }
             return Ok(());
         }
+        // si no tiene destinatario
         if !self.users.contains_key(&to) {
             return Err((app_errors::ERR_NOSUCHNICK, vec![to]));
         }
 
+        // 
         let ForeignClient(user, _hopcount, _server, away_msg) = match self.streams.get(&to) {
             Some(user) => user,
             None => return Err((app_errors::ERR_NOSUCHNICK, vec![to])),
@@ -674,6 +679,7 @@ impl ClientsInfo {
         Ok(())
     }
 
+    // escribe mensajes en el stream (ej. cuando se envia PRIVMSG a otro usuario)
     fn write_message(msg: String, stream: Arc<Mutex<TcpStream>>) {
         let mut stream = match stream.lock() {
             Ok(stream) => stream,

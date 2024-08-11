@@ -98,13 +98,13 @@ impl Server {
     fn register_to_parent(
         connection: &mut Option<TcpStream>,
         pwd: Option<String>,
-        name: String,
+        server_name: String,
     ) -> Result<(), Box<dyn Error>> {
         if let Some(connection) = connection {
             if let Some(pwd) = pwd {
                 connection.write_all(format!("PASS {}\n", pwd).as_bytes())?; //it sends the PASS command to the parent server
             }
-            connection.write_all(format!("SERVER {} 1 info", name).as_bytes())?; //it sends the SERVER command to the parent server
+            connection.write_all(format!("SERVER {} 1 info", server_name).as_bytes())?; //it sends the SERVER command to the parent server
             let ans = Self::read_from_stream(connection)?;
             println!("{ans}");
             if ans.starts_with('4') {
