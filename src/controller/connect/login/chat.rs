@@ -17,7 +17,7 @@ pub fn run_chat(client: Arc<Mutex<ClientC>>) -> Result<(), Box<dyn Error>> {
     let entry_dialog_resume_file_src = include_str!("entry_dialog_resume_file.glade");
     let double_entry_dialog_src = include_str!("double_entry_dialog.glade");
     let dcc_solicitud_dialog_src = include_str!("dcc_solicitud_dialog.glade");
-    let dcc_chat_window_src = include_str!("dcc_chat_window.glade");
+    // let dcc_chat_window_src = include_str!("dcc_chat_window.glade");
 
     // Then we call the Builder call.
     let builder = Builder::from_string(glade_src);
@@ -977,8 +977,6 @@ pub fn run_chat(client: Arc<Mutex<ClientC>>) -> Result<(), Box<dyn Error>> {
     });
 
 
-
-
     // CONEXION DCC CHAT
     // Carga el cuadro de aceptar / rechazar coneccion p2p
     let dcc_solicitud_dialog = Builder::from_string(dcc_solicitud_dialog_src);
@@ -994,25 +992,6 @@ pub fn run_chat(client: Arc<Mutex<ClientC>>) -> Result<(), Box<dyn Error>> {
     let dcc_sender_name: Label = dcc_solicitud_dialog
         .object("dcc_sender_name")
         .expect("dcc_sender_name object not found");
-
-    // CHAT CONVERSACION DCC
-    // cargar y configurar la ventana de chat DCC
-    // let dcc_chat_builder = Builder::from_string(dcc_chat_window_src);
-    // let dcc_chat_window: Window = dcc_chat_builder
-    //     .object("dcc_chat_window")
-    //     .expect("dcc_chat_window object not found");
-    // let dcc_chat_history: TextView = dcc_chat_builder
-    //     .object("dcc_chat_history")
-    //     .expect("dcc_chat_history object not found");
-    // let dcc_chat_send_button: Button = dcc_chat_builder
-    //     .object("dcc_chat_send_button")
-    //     .expect("dcc_chat_send_button object not found");
-    // let dcc_chat_message_entry: Entry = dcc_chat_builder
-    //     .object("dcc_chat_message_entry")
-    //     .expect("dcc_chat_message_entry object not found");
-    // let dcc_receiver_name: Label = dcc_chat_builder
-    //     .object("dcc_receiver_name")
-    //     .expect("dcc_receiver_name object not found");
     
     // variables de actualizacion de pop ups ya sea para archivos o para mensajes p2p
     let initial_message = DCCMessage::new(String::new(), String::new(), String::new(), false);
@@ -1054,9 +1033,9 @@ pub fn run_chat(client: Arc<Mutex<ClientC>>) -> Result<(), Box<dyn Error>> {
     let entry_dialog_resume: Dialog = entry_dialog_resume_file
         .object("entry_dialog_resume")
         .expect("Problems opening entry_dialog_resume");
-    let position_entry: Entry = entry_dialog_resume_file
-        .object("position_entry")
-        .expect("position_entry object not found");
+    // let position_entry: Entry = entry_dialog_resume_file
+    //     .object("position_entry")
+    //     .expect("position_entry object not found");
     let resume_button: Button = entry_dialog_resume_file
         .object("resume")
         .expect("resume object not found");
@@ -1081,8 +1060,6 @@ pub fn run_chat(client: Arc<Mutex<ClientC>>) -> Result<(), Box<dyn Error>> {
     let entry_dialog_receive_file_clone2 = entry_dialog_resume.clone();
     let entry_dialog_receive_file_clone3 = entry_dialog_resume.clone();
     let client_ok_receive_clone_dcc = client.clone();
-    let position_entry_clone = position_entry.clone();
-    let resume_client_clone = client.clone();
     entry_dialog_receive_file_close.connect_clicked(move |_| {
         entry_dialog_receive_file_clone1.close();
 
@@ -1101,12 +1078,9 @@ pub fn run_chat(client: Arc<Mutex<ClientC>>) -> Result<(), Box<dyn Error>> {
             .expect("Couldn't lock client")
             .handle_dcc_send_files(dcc_response_clone_cancel_file2.clone());
     });
-    // si debe resumir
+    // si debe resumir desde un punto durante el envio
     entry_dialog_receive_file_button.connect_clicked(move |_| {
         entry_dialog_receive_file_clone3.close();
-        // leer en el buffer el valor que ingresó el usuario   -> id del GtkEntry "position_entry"
-        // llamar a una funcion del cliente encargada de resumir el archivo
-
         // let to = send_active_chat_file_clone.lock().expect("failed to get lock");
         // let position_resume = position_entry_clone.buffer().text();
 
@@ -1116,14 +1090,10 @@ pub fn run_chat(client: Arc<Mutex<ClientC>>) -> Result<(), Box<dyn Error>> {
         //         .expect("Couldn't lock client")
         //         .send_dcc_send_message(to.to_string(), position_resume);
         // }
-        
         // position_entry_clone.buffer().set_text("");
-    
         // // vacía el mensaje dcc send
         // let mut dcc_response_lock = dcc_response_clone_cancel.lock().expect("Couldn't lock dcc_response at cancel action");
         // *dcc_response_lock = Received::Msg(String::new(), String::new(), String::new());
-
-        
     });
 
 

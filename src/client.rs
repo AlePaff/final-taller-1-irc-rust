@@ -175,7 +175,7 @@ impl ClientC {
         // std::thread::spawn(move || {
         println!("Listening for incoming DCC CHAT connection on {}:{}", ip, port);
 
-            // Aceptar una conexión entrante
+        // Aceptar una conexión entrante
         if let Ok((socket, addr)) = listener.accept() {
             println!("Accepted DCC CHAT connection from {}", addr);
             
@@ -650,16 +650,6 @@ impl ClientC {
                         to.trim().to_string(),
                         msg.to_string(),
                     );
-                // } else if let Some((sender, message)) = message.split_once("PRIVMSG") {
-                //     let (to, msg) = match message.trim().split_once(' ') {
-                //         Some(x) => x,
-                //         None => return Received::Unknown(message.to_string()),
-                //     };
-                //     return Received::Msg(
-                //         sender.trim().to_string(),
-                //         to.trim().to_string(),
-                //         msg.to_string(),
-                //     );
                 } else {
                     return Received::Unknown(message);
                 }
@@ -788,15 +778,6 @@ impl ClientC {
         }
         Ok(())
     }
-
-    /*     /// reads a line from the stream
-    fn read_from(stream: &mut dyn Read) -> std::io::Result<String> {
-        let mut reader = BufReader::new(stream);
-        let mut line = String::new();
-        reader.read_line(&mut line)?;
-        Ok(line[..line.len() - 1].to_string())
-        //Ok(line.to_string())
-    } */
 
     /// writes a line to the stream
     fn write_to(stream: &mut dyn Write, buffer: String) -> std::io::Result<()> {
