@@ -367,14 +367,6 @@
                                 <property name="use-stock">False</property>
                               </object>
                             </child>
-                            <child>
-                              <object class="GtkImageMenuItem">
-                                <property name="visible">True</property>
-                                <property name="can-focus">False</property>
-                                <property name="use-underline">True</property>
-                                <property name="use-stock">True</property>
-                              </object>
-                            </child>
                           </object>
                         </child>
                       </object>
@@ -439,6 +431,20 @@
               </object>
             </child>
           </object>
+        </child>
+        <child>
+          <object class="GtkButton" id="p2p_button">
+            <property name="label" translatable="yes">P2P</property>
+            <property name="width-request">80</property>
+            <property name="height-request">30</property>
+            <property name="visible">True</property>
+            <property name="can-focus">True</property>
+            <property name="receives-default">True</property>
+          </object>
+          <packing>
+            <property name="x">398</property>
+            <property name="y">80</property>
+          </packing>
         </child>
       </object>
     </child>

@@ -14,6 +14,7 @@ pub fn run_chat(client: Arc<Mutex<ClientC>>) -> Result<(), Box<dyn Error>> {
     let glade_src = include_str!("irc_chat_chiquito.glade");
     let entry_dialog_src = include_str!("entry_dialog.glade");
     let double_entry_dialog_src = include_str!("double_entry_dialog.glade");
+    let dcc_solicitud_dialog = include_str!("dcc_solicitud_dialog.glade");
 
     // Then we call the Builder call.
     let builder = Builder::from_string(glade_src);
@@ -62,6 +63,10 @@ pub fn run_chat(client: Arc<Mutex<ClientC>>) -> Result<(), Box<dyn Error>> {
     let send_button: Button = builder
         .object("send_button")
         .expect("send_button object not found");
+    let dcc_button: Button = builder
+    .object("dcc_button")
+    .expect("dcc_button object not found");
+
 
     // enter key
     let send_entry_enter = send_entry.clone();
@@ -103,6 +108,28 @@ pub fn run_chat(client: Arc<Mutex<ClientC>>) -> Result<(), Box<dyn Error>> {
             send_active_chat.clone(),
         );
     });
+
+    let client_clone_send_dcc = client.clone();
+    let send_active_chat_dcc = active_chat.clone();
+    dcc_button.connect_clicked(move |_| {
+        send_dcc(client_clone_send_dcc.clone(), send_active_chat_dcc.clone());
+    });
+
+    // envía un mensaje DCC CHAT para iniciar una conexion a otro usuario a traves de la red IRC
+    fn send_dcc(
+        client: Arc<Mutex<ClientC>>,
+        to: Arc<Mutex<String>>,
+    ) {
+        let to = match to.lock() {
+            Ok(guard) => guard.clone(),
+            Err(_) => panic!("Error accesing send destination lock"),
+        };
+        if !to.is_empty() {
+            if let Ok(mut guard) = client.lock() {
+                guard.send_dcc_chat(to, "localhost".to_string(), "7676".to_string());
+            }
+        }
+    }
 
     /// sends a message to a chat given an: entry (a message), a TextView (the chat display),
     /// a client, a HashMap (the conversations, <nick, chat_history>), and a String (the chat destination)
@@ -780,10 +807,35 @@ pub fn run_chat(client: Arc<Mutex<ClientC>>) -> Result<(), Box<dyn Error>> {
                 let mut nick_conversations_clone =
                     nick_conversations.lock().expect("Couldn't lock");
                 let mut conversation = from.clone();
+                
+                // si es dcc
+                println!("{}", to);
+                println!("{}", message);
+                if message.starts_with('\x01') && message.ends_with('\x01') {
+                    // solicitud_dcc_chat();
+                    /*
+                    ventana_aceptar_rechazar_dcc_chat.glade
+                    inicializar botones y demás
+
+                    si apreto OK
+                        envía por ctcp el mensaje ACEPTAR
+                        se conecta por tcp al puerto enviado
+                        usa la misma pantalla del chat, le cambia el titulo nomás
+
+                    si apreto NO o X
+                        envía un mensaje diciendo que no
+                        continúa todo normal
+
+                     */
+                    println!("funciona");
+                    return;
+                };
+
                 if to.starts_with('#') || to.starts_with('&') {
                     //if it's a channel
                     conversation = to; //the conversation is the channel
                 };
+                
 
                 match nick_conversations_clone.get_mut(&conversation) {
                     Some(chat) => {
