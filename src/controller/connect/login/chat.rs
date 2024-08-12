@@ -14,7 +14,7 @@ pub fn run_chat(client: Arc<Mutex<ClientC>>) -> Result<(), Box<dyn Error>> {
     let glade_src = include_str!("irc_chat_chiquito.glade");
     let entry_dialog_src = include_str!("entry_dialog.glade");
     let double_entry_dialog_src = include_str!("double_entry_dialog.glade");
-    let dcc_solicitud_dialog = include_str!("dcc_solicitud_dialog.glade");
+    // let dcc_solicitud_dialog = include_str!("dcc_solicitud_dialog.glade");
 
     // Then we call the Builder call.
     let builder = Builder::from_string(glade_src);
@@ -794,14 +794,17 @@ pub fn run_chat(client: Arc<Mutex<ClientC>>) -> Result<(), Box<dyn Error>> {
         gtk::Inhibit(true)
     });
 
+
     /// given a client, a label and a hashmap of conversations
     /// it will receive messages from the server and update the label and the hashmap
     fn receive(
         client: &Arc<Mutex<ClientC>>,
         label: &Label,
         nick_conversations: &Arc<Mutex<HashMap<String, String>>>,
+        dcc_response: Msg(),
     ) {
         let res = client.lock().expect("Couldn't lock").read_message();
+        let client_clone = client.lock().expect("Couldn't lock");
         match res {
             Msg(from, to, message) => {
                 let mut nick_conversations_clone =
@@ -810,23 +813,22 @@ pub fn run_chat(client: Arc<Mutex<ClientC>>) -> Result<(), Box<dyn Error>> {
                 
                 // mensajes CTCP como los DCC CHAT y DDC SEND
                 if message.starts_with('\x01') && message.ends_with('\x01') {
-                    // solicitud_dcc_chat();
-                    // parseo mensaje 
-                    /*
-                    ventana_aceptar_rechazar_dcc_chat.glade
-                    inicializar botones y demás
+                    println!("Mensjae DCC recibido!");
 
-                    si apreto OK
-                        envía por ctcp el mensaje ACEPTAR
-                        se conecta por tcp al puerto enviado
-                        usa la misma pantalla del chat, le cambia el titulo nomás
+                    // Llama a una función para mostrar el diálogo en el hilo principal
+                    let from_clone = from.clone(); // Clonamos `from` aquí
 
-                    si apreto NO o X
-                        envía un mensaje diciendo que no
-                        continúa todo normal
-
-                     */
-                    println!("funciona");
+                    // Llama a una función para mostrar el diálogo en el hilo principal
+                    // glib::idle_add_local({
+                        let from_clone = from_clone.clone();
+                        
+    
+                        // move || {
+                            show_dcc_dialog(&from_clone, &client_clone);
+                            // glib::Continue(false) // Para que no se ejecute más
+                        // }
+                    // });
+    
                     return;
                 };
 
@@ -885,6 +887,45 @@ pub fn run_chat(client: Arc<Mutex<ClientC>>) -> Result<(), Box<dyn Error>> {
         thread::sleep(Duration::from_millis(10));
     }
 
+    fn show_dcc_dialog(from: &str, client: &Arc<Mutex<ClientC>>) {
+        // Carga el diálogo desde el archivo Glade
+        let dcc_solicitud_dialog = include_str!("dcc_solicitud_dialog.glade");
+        let dcc_solicitud_dialog = Builder::from_string(dcc_solicitud_dialog);
+        let entry_dialog: Dialog = dcc_solicitud_dialog
+            .object("entry_dialog")
+            .expect("Problems opening entry_dialog");
+        let dcc_ok_button: Button = dcc_solicitud_dialog
+            .object("dcc_ok")
+            .expect("dcc_ok object not found");
+        let dcc_cancel_button: Button = dcc_solicitud_dialog
+            .object("dcc_cancel")
+            .expect("dcc_cancel object not found");
+        let dcc_sender_name: Label = dcc_solicitud_dialog
+            .object("dcc_sender_name")
+            .expect("dcc_sender_name object not found");
+    
+        // Configura el diálogo
+        entry_dialog.show_all();
+        dcc_sender_name.set_text(from);
+    
+        // Conecta los botones
+        let entry_dialog_clone = entry_dialog.clone();
+        dcc_cancel_button.connect_clicked(move |_| {
+            entry_dialog_clone.close();
+            println!("Rechazar mensaje DCC");
+        });
+
+        let res = client.lock().expect("Couldn't lock").dcc_chat;
+
+        dcc_ok_button.connect_clicked(move |_| {
+            entry_dialog_clone.close();
+            println!("Iniciar conversación");
+            // Aquí puedes iniciar la conexión TCP y abrir una nueva ventana
+            // para la conversación en otro hilo
+        });
+    }
+    
+
     let rpl_label: Label = builder //rpl = reply
         .object("RPL_label")
         .expect("RPL_label object not found");
@@ -893,11 +934,14 @@ pub fn run_chat(client: Arc<Mutex<ClientC>>) -> Result<(), Box<dyn Error>> {
     let chat_display_idle = chat_display;
     let client_idle = client;
     let conversations_idle = conversations;
-    glib::idle_add_local(move || {
+    
+    glib::idle_add_local(
+        move || {
         refresh_chat(&active_chat_idle, &chat_display_idle, &conversations_idle);
         receive(&client_idle, &rpl_label, &conversations_idle);
         glib::Continue(true)
-    });
+    }
+);
 
     Ok(())
 }

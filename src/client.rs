@@ -6,9 +6,10 @@ use std::collections::HashSet;
 use std::error::Error;
 use std::io::stdin;
 use std::io::{BufRead, BufReader, Read, Write};
-use std::net::TcpStream;
+use std::net::{TcpListener, TcpStream};
 use std::thread;
 use std::time::Duration;
+use std::sync::Arc;
 
 pub enum Received {
     Msg(String, String, String),
@@ -56,6 +57,7 @@ pub struct ClientC {
     server: TcpStream,
     channels: HashSet<String>,
     nick: Option<String>,
+    dcc_chat: Option<TcpStream>,
 }
 
 impl ClientC {
@@ -71,6 +73,7 @@ impl ClientC {
             server,
             channels,
             nick: None,
+            dcc_chat: None,
         })
     }
 
@@ -105,13 +108,67 @@ impl ClientC {
 
 
     /// sends a DCC CHAT request, writing the PRIVMSG command with a CTCP message to the server
-    pub fn send_dcc_chat(&mut self, to: String, ip: String, port: String) {
+    pub fn send_dcc_chat(&mut self, to: String, ip_sender: String, port_sender: String) {
+        
+        // Crear el socket de escucha en la ip y puerto del sender
+        let listener = TcpListener::bind("localhost:7676").expect("Failed to bind to port");
+        // let listener = TcpListener::bind("0.0.0.0:0").expect("Failed to bind to port");      // escucha a toodas las posibles conexiones entrantes
+        let local_addr = listener.local_addr().expect("Failed to get local address");
+
+        // Obtener la IP y el puerto
+        let ip = local_addr.ip().to_string();
+        let port = local_addr.port().to_string();
+
+        // Enviar el mensaje DCC CHAT a través de IRC
         let message_dcc = format!("\x01DCC CHAT chat {} {}\x01", ip, port);
         self.send_privmsg(to, message_dcc);
-        // crear puerto de escucha de tcp
+
+        // let mut sender = self.server.try_clone()?;
+        // let sender = thread::spawn(move || ClientC::sender(&mut sender));
+        // Clonar la referencia para enviarla al hilo
+        // let self_clone = Arc::clone(&self);
+        // std::thread::spawn(move || {
+            println!("Listening for incoming DCC CHAT connection on {}:{}", ip, port);
+
+            if let Ok((mut socket, addr)) = listener.accept() {
+                println!("Accepted DCC CHAT connection from {}", addr);
+                
+                self.dcc_chat = Some(socket);
+                // Clonar la referencia nuevamente dentro del hilo
+                // let mut client = self_clone.lock().expect("Failed to lock client");
+                // client.handle_chat_session(&mut socket);
+            } else {
+                eprintln!("Failed to accept connection");
+            }
+        // });
     }
 
-
+    
+    fn handle_chat_session(&mut self, stream: &mut TcpStream) {
+        let mut buffer = [0; 512];
+    
+        loop {
+            // Leer datos del socket
+            match stream.read(&mut buffer) {
+                Ok(0) => {
+                    println!("Connection closed");
+                    break;
+                }
+                Ok(n) => {
+                    // Mostrar el mensaje recibido
+                    println!("Received: {}", String::from_utf8_lossy(&buffer[..n]));
+    
+                    // Echo: enviar de vuelta el mismo mensaje (opcional)
+                    stream.write_all(&buffer[..n]).expect("Failed to send data");
+                }
+                Err(e) => {
+                    eprintln!("Failed to read from socket: {}", e);
+                    break;
+                }
+            }
+        }
+    }
+    
 
 
 
@@ -308,6 +365,7 @@ impl ClientC {
             server,
             channels,
             nick: None,
+            dcc_chat: None,
         })
     }
 
