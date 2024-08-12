@@ -41,20 +41,38 @@ pub fn run_connect() -> Result<(), Box<dyn Error>> {
     let error_label: Label = builder
         .object("error_label")
         .expect("error_label object not found");
-    connect_button.connect_clicked(move |_| {
+
+    // clona y usa rc con box simplemente para poder apretar Enter luego de escribir el puerto
+    let ip_input_clone = ip_input.clone();
+    let port_input_clone = port_input.clone();
+    let error_label_clone = error_label.clone();
+
+    let handle_connect = Rc::new(RefCell::new(Box::new(move || {
         let mut client_builder = ClientBuilder::new();
-        client_builder.set_ip(ip_input.text().to_string());
-        client_builder.set_port(port_input.text().to_string());
+        client_builder.set_ip(ip_input_clone.text().to_string());
+        client_builder.set_port(port_input_clone.text().to_string());
         match client_builder.get_client() {
             Ok(client) => {
                 let mut can_close_window = can_close_window_clone.borrow_mut();
                 *can_close_window = true;
                 window_clone.close();
-                run_login(client); //runs the login window
+                run_login(client);
             }
-            Err(line) => error_label.set_label(line.as_str()),
+            Err(line) => error_label_clone.set_label(line.as_str()),
         }
+    }) as Box<dyn FnMut()>));
+
+    // si hago click en el boton enviar
+    let handle_connect_clone = handle_connect.clone();
+    connect_button.connect_clicked(move |_| {
+        (handle_connect_clone.borrow_mut())();
     });
+    // permitir apretar Enter (connect_activate)
+    let handle_connect_clone = handle_connect.clone();
+    port_input.connect_activate(move |_| {
+        (handle_connect_clone.borrow_mut())();
+    });
+    
 
     let window_clone = window.expect("Error creating the window");
     window_clone.connect_delete_event(move |_, _| {
