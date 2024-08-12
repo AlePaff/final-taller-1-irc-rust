@@ -17,6 +17,7 @@ pub enum Received {
     Unknown(String),
 }
 
+// utilizado para el cliente con interfaz gráfica. TODO: Se podría adaptar al CLI
 pub struct ClientBuilder {
     ip: Option<String>,
     port: Option<String>,
@@ -64,7 +65,7 @@ impl ClientC {
         server.set_read_timeout(Some(Duration::from_millis(100)))?;
         let channels = HashSet::new();
         
-        println!("CLIENTE CREADO!!");
+        println!("Cliente creado GTK!");
         Ok(ClientC {
             //logger_file_path,
             server,
@@ -102,6 +103,13 @@ impl ClientC {
     }
 
 
+
+    /// sends a DCC CHAT request, writing the PRIVMSG command with a CTCP message to the server
+    pub fn send_dcc_chat(&mut self, to: String, ip: String, port: String) {
+        let message_dcc = format!("\x01DCC CHAT chat {} {}\x01", ip, port);
+        self.send_privmsg(to, message_dcc);
+        // crear puerto de escucha de tcp
+    }
 
 
 

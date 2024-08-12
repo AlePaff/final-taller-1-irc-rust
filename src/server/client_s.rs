@@ -74,8 +74,10 @@ impl ClientS {
     pub fn run(&mut self) -> std::io::Result<()> {
         println!("Cliente iniciado. Esperando mensajes.");
         while let Ok(line) = self.read_from_stream() {
-            let message = Message::build(line).expect("Error reading from stream");
+            let message = Message::build(line.clone()).expect("Error reading from stream");
             if let Command::Invalid(_) = message.command {
+                // debería escribir en el stream indicandole al cliente que hubo un error. Los mensajes de http (como 200, 400, etc) cuando se escriban en el TcpStream van a ser indicados como si fuese un error
+                println!("Comando inválido. Mensaje recibido: {}", line);
                 continue;
             } else {
                 self.logger

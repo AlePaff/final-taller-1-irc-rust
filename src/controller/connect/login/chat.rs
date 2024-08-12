@@ -122,7 +122,7 @@ pub fn run_chat(client: Arc<Mutex<ClientC>>) -> Result<(), Box<dyn Error>> {
     ) {
         let to = match to.lock() {
             Ok(guard) => guard.clone(),
-            Err(_) => panic!("Error accesing send destination lock"),
+            Err(_) => panic!("Error accesing send dcc lock"),
         };
         if !to.is_empty() {
             if let Ok(mut guard) = client.lock() {
@@ -808,11 +808,10 @@ pub fn run_chat(client: Arc<Mutex<ClientC>>) -> Result<(), Box<dyn Error>> {
                     nick_conversations.lock().expect("Couldn't lock");
                 let mut conversation = from.clone();
                 
-                // si es dcc
-                println!("{}", to);
-                println!("{}", message);
+                // mensajes CTCP como los DCC CHAT y DDC SEND
                 if message.starts_with('\x01') && message.ends_with('\x01') {
                     // solicitud_dcc_chat();
+                    // parseo mensaje 
                     /*
                     ventana_aceptar_rechazar_dcc_chat.glade
                     inicializar botones y demás

@@ -712,10 +712,12 @@ impl ClientsInfo {
                 let mut stream = stream
                     .lock()
                     .expect("Error: server lock poisoned during try add server");
+                // envía un mensaje al padre indicando, que se pudo conectar
                 stream
                     .write_all("200 :Succesfully Connected\n".as_bytes())
                     .expect("Error writing to server");
                 println!("Registrando nuevo server: {}", name);
+                // broadcast comando SERVER a todos los servidores de la red, acerca del nuevo server
                 for (neighbour_name, foreign_server) in self.servers.iter_mut() {
                     let ForeignServer(neighbour_stream, neighbour_hopcount, neighbour_info, _path) =
                         foreign_server;
@@ -740,9 +742,11 @@ impl ClientsInfo {
                             .expect("Error writing to server");
                     }
                 }
+                // broadcast de NICK y USER a todos los servidores del usuario nuevo
                 for (nick, ForeignClient(_stream, hopcount, _server, _away_msg)) in
                     self.streams.iter_mut()
                 {
+                    // NICK para indicar que tan lejos esta el usuario de su servidor
                     stream
                         .write_all(
                             format!(
@@ -758,6 +762,7 @@ impl ClientsInfo {
                         .users
                         .get(nick)
                         .expect("Error obtaining user during try add server");
+                    // USER para indicar nuevo usuario en la red
                     stream
                         .write_all(
                             format!(
@@ -774,6 +779,7 @@ impl ClientsInfo {
                         )
                         .expect("Error writing to server");
                 }
+                // broadcast de los canales, y operadores ?
                 for (channel_name, channel) in self.channels.iter_mut() {
                     let operators = channel.get_operators();
                     let mut key = String::new();
@@ -859,6 +865,7 @@ impl ClientsInfo {
                 }
             }
         }
+        // agrega el nuevo server
         self.servers
             .insert(name, ForeignServer(stream, hopcount, info, server_name));
         Ok((app_errors::RPL_SUCCESS, vec![]))
