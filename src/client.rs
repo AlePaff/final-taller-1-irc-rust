@@ -9,7 +9,6 @@ use std::io::{BufRead, BufReader, Read, Write};
 use std::net::{TcpListener, TcpStream};
 use std::thread;
 use std::time::Duration;
-use std::sync::Arc;
 
 pub enum Received {
     Msg(String, String, String),
@@ -130,13 +129,20 @@ impl ClientC {
         // std::thread::spawn(move || {
             println!("Listening for incoming DCC CHAT connection on {}:{}", ip, port);
 
-            if let Ok((mut socket, addr)) = listener.accept() {
+            if let Ok((socket, addr)) = listener.accept() {
                 println!("Accepted DCC CHAT connection from {}", addr);
-                
-                self.dcc_chat = Some(socket);
-                // Clonar la referencia nuevamente dentro del hilo
-                // let mut client = self_clone.lock().expect("Failed to lock client");
-                // client.handle_chat_session(&mut socket);
+            
+                // Cerrar el socket del listener
+                drop(listener);
+    
+                // Establecer el socket de chat
+                self.dcc_chat = Some(socket.try_clone().expect("Failed to clone socket"));
+    
+                // Enviar el mensaje de bienvenida al socket de chat
+                if let Some(ref mut chat_socket) = self.dcc_chat {
+                    chat_socket.write_all("Bienvenido al chat P2P".as_bytes())
+                        .expect("Failed to send welcome message");
+                }
             } else {
                 eprintln!("Failed to accept connection");
             }
@@ -144,28 +150,11 @@ impl ClientC {
     }
 
     
-    fn handle_chat_session(&mut self, stream: &mut TcpStream) {
-        let mut buffer = [0; 512];
-    
-        loop {
-            // Leer datos del socket
-            match stream.read(&mut buffer) {
-                Ok(0) => {
-                    println!("Connection closed");
-                    break;
-                }
-                Ok(n) => {
-                    // Mostrar el mensaje recibido
-                    println!("Received: {}", String::from_utf8_lossy(&buffer[..n]));
-    
-                    // Echo: enviar de vuelta el mismo mensaje (opcional)
-                    stream.write_all(&buffer[..n]).expect("Failed to send data");
-                }
-                Err(e) => {
-                    eprintln!("Failed to read from socket: {}", e);
-                    break;
-                }
-            }
+    pub fn handle_dcc_chat_session(&mut self, mensaje: &str) {
+        // escribir mensaje generico
+        if let Some(ref mut chat_socket) = self.dcc_chat {
+            chat_socket.write_all(mensaje.as_bytes())
+                .expect("Failed to send welcome message");
         }
     }
     

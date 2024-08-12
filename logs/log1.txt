@@ -38,3 +38,110 @@
 =============== SERVER EXECUTED ===============
 
 =============== SERVER EXECUTED ===============
+
+=============== SERVER EXECUTED ===============
+PASS 1111
+NICK ale 0
+USER ae asd
+NAMES 
+WHO *
+NAMES 
+WHO *
+PRIVMSG ale :DCC CHAT chat ::1 7676
+
+=============== SERVER EXECUTED ===============
+PASS 1111
+NICK asd 0
+USER a asd
+NAMES 
+WHO *
+PRIVMSG asd :DCC CHAT chat ::1 7676
+PASS 1111
+NICK qwqw 0
+USER qw qw
+PASS 1111
+NICK uy 0
+USER uy uy
+NAMES 
+WHO *
+PRIVMSG qwqw :hola
+NAMES 
+WHO *
+PRIVMSG uy :bien
+PRIVMSG uy :DCC CHAT chat ::1 7676
+PASS 1111
+NICK ale 0
+USER a a
+PASS 1111
+NICK cami 0
+USER c c
+NAMES 
+WHO *
+PRIVMSG cami :hola
+NAMES 
+WHO *
+PRIVMSG ale :DCC CHAT chat ::1 7676
+NAMES 
+WHO *
+PRIVMSG cami :DCC CHAT chat 127.0.0.1 7676
+
+=============== SERVER EXECUTED ===============
+PASS 1111
+NICK ale 0
+USER a a
+NAMES 
+WHO *
+NAMES 
+WHO *
+PRIVMSG ale :DCC CHAT chat ::1 7676
+
+=============== SERVER EXECUTED ===============
+PASS 1111
+NICK ale 0
+USER a a
+NAMES 
+WHO *
+PRIVMSG ale :DCC CHAT chat ::1 7676
+
+=============== SERVER EXECUTED ===============
+PASS 1111
+NICK asd 0
+USER as asd
+PASS 1111
+NICK fefe 0
+USER fe fe
+NAMES 
+WHO *
+PRIVMSG asd :zxc
+NAMES 
+WHO *
+PRIVMSG fefe :DCC CHAT chat ::1 7676
+QUIT
+PASS 1111
+NICK qq 0
+USER q q
+PASS 1111
+NICK tt 0
+USER t t
+NAMES 
+WHO *
+NAMES 
+WHO *
+PRIVMSG tt :asd
+NAMES 
+WHO *
+PRIVMSG qq :f
+PRIVMSG qq :DCC CHAT chat ::1 7676
+QUIT
+
+=============== SERVER EXECUTED ===============
+PASS 1111
+NICK a 0
+USER a a
+PASS 1111
+NICK b 0
+USER b b
+NAMES 
+WHO *
+PRIVMSG a :hola
+PRIVMSG a :DCC CHAT chat ::1 7676
