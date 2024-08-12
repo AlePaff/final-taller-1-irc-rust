@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Generated with glade 3.38.2 -->
+<interface>
+  <requires lib="gtk+" version="3.24"/>
+  <object class="GtkWindow" id="dcc_chat_window">
+    <property name="can-focus">False</property>
+    <property name="window-position">center</property>
+    <child>
+      <object class="GtkFixed" id="container">
+        <property name="width-request">32</property>
+        <property name="visible">True</property>
+        <property name="can-focus">False</property>
+        <child>
+          <object class="GtkButton" id="dcc_chat_send_button">
+            <property name="label" translatable="yes">send</property>
+            <property name="width-request">78</property>
+            <property name="height-request">32</property>
+            <property name="visible">True</property>
+            <property name="can-focus">True</property>
+            <property name="receives-default">True</property>
+          </object>
+          <packing>
+            <property name="x">402</property>
+            <property name="y">440</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkEntry" id="dcc_chat_message_entry">
+            <property name="width-request">400</property>
+            <property name="height-request">32</property>
+            <property name="visible">True</property>
+            <property name="can-focus">True</property>
+            <property name="max-length">256</property>
+          </object>
+          <packing>
+            <property name="y">440</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkTextView" id="dcc_chat_history">
+            <property name="width-request">481</property>
+            <property name="height-request">397</property>
+            <property name="visible">True</property>
+            <property name="can-focus">True</property>
+            <property name="editable">False</property>
+          </object>
+          <packing>
+            <property name="y">40</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkLabel" id="dcc_receiver_name">
+            <property name="name">RPL_label</property>
+            <property name="width-request">250</property>
+            <property name="height-request">35</property>
+            <property name="visible">True</property>
+            <property name="can-focus">False</property>
+          </object>
+          <packing>
+            <property name="x">2</property>
+            <property name="y">2</property>
+          </packing>
+        </child>
+      </object>
+    </child>
+  </object>
+</interface>

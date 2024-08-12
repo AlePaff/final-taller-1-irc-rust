@@ -1,6 +1,6 @@
 use crate::client::ClientC;
 use crate::client::Received::*;
-use crate::client::Received;
+use crate::client::DCCMessage;
 use gtk::prelude::*;
 use gtk::{Builder, Button, Dialog, Entry, Label, Menu, MenuItem, TextView, Window};
 use std::collections::HashMap;
@@ -14,9 +14,10 @@ pub fn run_chat(client: Arc<Mutex<ClientC>>) -> Result<(), Box<dyn Error>> {
     // First we get the file content.
     let glade_src = include_str!("irc_chat_chiquito.glade");
     let entry_dialog_src = include_str!("entry_dialog.glade");
+    let entry_dialog_resume_file_src = include_str!("entry_dialog_resume_file.glade");
     let double_entry_dialog_src = include_str!("double_entry_dialog.glade");
-    let dcc_solicitud_dialog = include_str!("dcc_solicitud_dialog.glade");
-    let dcc_chat_window = include_str!("dcc_chat_window.glade");
+    let dcc_solicitud_dialog_src = include_str!("dcc_solicitud_dialog.glade");
+    let dcc_chat_window_src = include_str!("dcc_chat_window.glade");
 
     // Then we call the Builder call.
     let builder = Builder::from_string(glade_src);
@@ -65,10 +66,6 @@ pub fn run_chat(client: Arc<Mutex<ClientC>>) -> Result<(), Box<dyn Error>> {
     let send_button: Button = builder
         .object("send_button")
         .expect("send_button object not found");
-    let dcc_button: Button = builder
-    .object("dcc_button")
-    .expect("dcc_button object not found");
-
 
     // enter key
     let send_entry_enter = send_entry.clone();
@@ -110,28 +107,6 @@ pub fn run_chat(client: Arc<Mutex<ClientC>>) -> Result<(), Box<dyn Error>> {
             send_active_chat.clone(),
         );
     });
-
-    let client_clone_send_dcc = client.clone();
-    let send_active_chat_dcc = active_chat.clone();
-    dcc_button.connect_clicked(move |_| {
-        send_dcc(client_clone_send_dcc.clone(), send_active_chat_dcc.clone());
-    });
-
-    // envía un mensaje DCC CHAT para iniciar una conexion a otro usuario a traves de la red IRC
-    fn send_dcc(
-        client: Arc<Mutex<ClientC>>,
-        to: Arc<Mutex<String>>,
-    ) {
-        let to = match to.lock() {
-            Ok(guard) => guard.clone(),
-            Err(_) => panic!("Error accesing send dcc lock"),
-        };
-        if !to.is_empty() {
-            if let Ok(mut guard) = client.lock() {
-                guard.send_dcc_chat(to, "localhost".to_string(), "7676".to_string());
-            }
-        }
-    }
 
     /// sends a message to a chat given an: entry (a message), a TextView (the chat display),
     /// a client, a HashMap (the conversations, <nick, chat_history>), and a String (the chat destination)
@@ -803,7 +778,8 @@ pub fn run_chat(client: Arc<Mutex<ClientC>>) -> Result<(), Box<dyn Error>> {
         client: &Arc<Mutex<ClientC>>,
         label: &Label,
         nick_conversations: &Arc<Mutex<HashMap<String, String>>>,
-        dcc_responses: &mut Vec<Received>, // Cambiado a &mut Vec<Received>
+        dcc_response: Arc<Mutex<DCCMessage>>,
+        dcc_response_files: Arc<Mutex<DCCMessage>>,
     ) {
         let res = client.lock().expect("Couldn't lock").read_message();
         match res {
@@ -814,9 +790,27 @@ pub fn run_chat(client: Arc<Mutex<ClientC>>) -> Result<(), Box<dyn Error>> {
                 
                 // mensajes CTCP como los DCC CHAT y DDC SEND
                 if message.starts_with('\x01') && message.ends_with('\x01') {
-                    println!("Received DCC Msg: from={}, to={}, message={}", from, to, message);
-                    dcc_responses.push(Received::Msg(from.clone(), to.clone(), message.clone()));
-                    return;
+                    let trimmed_message = message.trim_start_matches('\x01').trim_end_matches('\x01');
+
+                    // Verificar el tipo de mensaje
+                    if trimmed_message.starts_with("DCC CHAT") {
+                        println!("Received DCC CHAT Message: from={}, to={}, message={}", from, to, trimmed_message);
+                        let mut dcc_response_lock = dcc_response.lock().expect("Couldn't lock dcc_response");
+                        *dcc_response_lock = DCCMessage::new(from.clone(), to.clone(), message.clone(), false);
+                        
+                    } else if trimmed_message.starts_with("DCC SEND") {
+                        let mut dcc_response_files_lock = dcc_response_files.lock().expect("Couldn't lock dcc_response_files");
+                        *dcc_response_files_lock = DCCMessage::new(from.clone(), to.clone(), message.clone(), false);
+                    
+                    } else if trimmed_message.starts_with("DCC RESUME") {   // este mensaje es enviado por el receptor del archivo
+                        println!("Received DCC RESUME Message: from={}, to={}, message={}", from, to, trimmed_message);
+                        
+                        // Actualizar la variable correspondiente para DCC RESUME
+                        // *dcc_response_lock = DCCMessage::new(from.clone(), to.clone(), trimmed_message.to_string(), false);
+                    } else {
+                        println!("Unknown DCC Message Type: from={}, to={}, message={}", from, to, trimmed_message);
+                        return;
+                    }
                 };
 
                 if to.starts_with('#') || to.starts_with('&') {
@@ -876,19 +870,118 @@ pub fn run_chat(client: Arc<Mutex<ClientC>>) -> Result<(), Box<dyn Error>> {
 
     // Función para mostrar en pantalla el diálogo / solicitud DCC
     fn update_dcc_dialog(
-        dcc_responses: &Vec<Received>,
+        dcc_response: Arc<Mutex<DCCMessage>>,
         entry_dialog: &Dialog,
-        dcc_sender_name: &Label,
+        dcc_sender_name: &Label
     ) {
-        if let Some(Received::Msg(from, _, _)) = dcc_responses.last() {
-            dcc_sender_name.set_text(from);
-            entry_dialog.show_all();
+        let mut dcc_response_lock = dcc_response.lock().expect("Couldn't lock dcc_response");
+        
+        let from = dcc_response_lock.from();
+        let _to = dcc_response_lock.to();
+        let message = dcc_response_lock.message();
+        let is_read = dcc_response_lock.is_read();
+        
+        // si no hay nadie que quiere conectarse
+        if message.is_empty(){
+            return;
+        }
+
+        // si el mensaje ya fue leido (mientras espera confirmacion del receptor)
+        // let mut dcc_response_leida_lock = booleano.lock().expect("Couldn't lock dcc_response");
+        if is_read {
+            return;
+        }
+
+        dcc_sender_name.set_text(&from);
+        entry_dialog.show_all();
+
+        dcc_response_lock.set_is_read(true);
+    }
+
+    // envía un mensaje DCC CHAT para iniciar una conexion a otro usuario a traves de la red IRC
+    fn send_dcc_chat(
+        client: Arc<Mutex<ClientC>>,
+        to: Arc<Mutex<String>>,
+    ) {
+        let to = match to.lock() {
+            Ok(guard) => guard.clone(),
+            Err(_) => panic!("Error accesing send dcc lock"),
+        };
+        if !to.is_empty() {
+            if let Ok(mut guard) = client.lock() {
+                guard.send_dcc_chat(to);
+            }
         }
     }
 
+    // CHAT Boton iniciar conexion para mensajes p2p
+    let dcc_button: Button = builder
+    .object("dcc_button")
+    .expect("dcc_button object not found");
+    let client_clone_chat_dcc = client.clone();
+    let send_active_chat_dcc = active_chat.clone();
+    dcc_button.connect_clicked(move |_| {
+        send_dcc_chat(client_clone_chat_dcc.clone(), send_active_chat_dcc.clone());
+    });
+    
+    // ADJUNTO-SEND Boton iniciar conexion y seleccionar archivo para envio de archivos p2p button_attach_file
+    let dcc_file_chooser_botton: Button = builder
+    .object("button_attach_file")
+    .expect("button_attach_file object not found");
+    // Conecta la señal `file-set` para manejar la selección de archivos
+    let client_clone_dcc_file = client.clone();
+    let send_active_chat_file_clone = active_chat.clone();
+    dcc_file_chooser_botton.connect_clicked(move |_| {
+        // muestra la opcion para cargar el path del archivo
+        let dcc_solicitud_dialog_send = Builder::from_string(entry_dialog_src);
+        let entry_dialog: Dialog = dcc_solicitud_dialog_send
+            .object("entry_dialog")
+            .expect("Could not get entry_dialog from dcc_solicitud_dialog_send");
+        let ok_button: Button = dcc_solicitud_dialog_send
+            .object("ok")
+            .expect("Could not get OK button from dcc_solicitud_dialog_send");
+        let cancel_button: Button = dcc_solicitud_dialog_send
+            .object("cancel")
+            .expect("Could not get Cancel button from dcc_solicitud_dialog_send");
+        let entry: Entry = dcc_solicitud_dialog_send
+            .object("entry")
+            .expect("Could not get Entry from dcc_solicitud_dialog_send");
+        entry_dialog.show_all();
+        // si apreta boton cancelar
+        let entry_dialog_clone = entry_dialog.clone();
+        cancel_button.connect_clicked(move |_| {
+            entry_dialog_clone.close();
+        });
+        // si apreto ok luego de escribir el path
+        let entry_dialog_clone = entry_dialog.clone();
+        let entry_clone = entry.clone();
+        let client_clone = client_clone_dcc_file.clone();
+        let send_active_chat_file_clone = send_active_chat_file_clone.clone();
+        ok_button.connect_clicked(move |_| {
+            entry_dialog_clone.close();
+
+            let to = send_active_chat_file_clone.lock().expect("failed to get lock");
+            let path_archivo = entry_clone.buffer().text();
+
+            if !to.is_empty() {
+                    client_clone
+                    .lock()
+                    .expect("Couldn't lock client")
+                    .send_dcc_send_message(to.to_string(), path_archivo);
+            }
+            
+            entry.buffer().set_text("");
+        });
+
+        gtk::Inhibit(true);
+    });
+
+
+
+
     // CONEXION DCC CHAT
     // Carga el cuadro de aceptar / rechazar coneccion p2p
-    let dcc_solicitud_dialog = Builder::from_string(dcc_solicitud_dialog);
+    let dcc_solicitud_dialog = Builder::from_string(dcc_solicitud_dialog_src);
     let entry_dialog: Dialog = dcc_solicitud_dialog
         .object("entry_dialog")
         .expect("Problems opening entry_dialog");
@@ -901,43 +994,140 @@ pub fn run_chat(client: Arc<Mutex<ClientC>>) -> Result<(), Box<dyn Error>> {
     let dcc_sender_name: Label = dcc_solicitud_dialog
         .object("dcc_sender_name")
         .expect("dcc_sender_name object not found");
-    let mut dcc_responses: Vec<Received> = Vec::new();
 
     // CHAT CONVERSACION DCC
     // cargar y configurar la ventana de chat DCC
-    let dcc_chat_builder = Builder::from_string(dcc_chat_window);
-    let dcc_chat_window: Window = dcc_chat_builder
-        .object("dcc_chat_window")
-        .expect("dcc_chat_window object not found");
-    let dcc_chat_history: TextView = dcc_chat_builder
-        .object("dcc_chat_history")
-        .expect("dcc_chat_history object not found");
-    let dcc_chat_send_button: Button = dcc_chat_builder
-        .object("dcc_chat_send_button")
-        .expect("dcc_chat_send_button object not found");
-    let dcc_chat_message_entry: Entry = dcc_chat_builder
-        .object("dcc_chat_message_entry")
-        .expect("dcc_chat_message_entry object not found");
+    // let dcc_chat_builder = Builder::from_string(dcc_chat_window_src);
+    // let dcc_chat_window: Window = dcc_chat_builder
+    //     .object("dcc_chat_window")
+    //     .expect("dcc_chat_window object not found");
+    // let dcc_chat_history: TextView = dcc_chat_builder
+    //     .object("dcc_chat_history")
+    //     .expect("dcc_chat_history object not found");
+    // let dcc_chat_send_button: Button = dcc_chat_builder
+    //     .object("dcc_chat_send_button")
+    //     .expect("dcc_chat_send_button object not found");
+    // let dcc_chat_message_entry: Entry = dcc_chat_builder
+    //     .object("dcc_chat_message_entry")
+    //     .expect("dcc_chat_message_entry object not found");
+    // let dcc_receiver_name: Label = dcc_chat_builder
+    //     .object("dcc_receiver_name")
+    //     .expect("dcc_receiver_name object not found");
+    
+    // variables de actualizacion de pop ups ya sea para archivos o para mensajes p2p
+    let initial_message = DCCMessage::new(String::new(), String::new(), String::new(), false);
+    let initial_message_files = DCCMessage::new(String::new(), String::new(), String::new(), false);
+    let dcc_response = Arc::new(Mutex::new(initial_message));
+    let dcc_response_files = Arc::new(Mutex::new(initial_message_files));
+
+
+
+    let client_clone_dcc = client.clone();
+    let dcc_response_clone_cancel = dcc_response.clone();
 
     // Conecta los botones Ok y Cancel
     let entry_dialog_clone_close = entry_dialog.clone();
     let entry_dialog_clone_close_ok = entry_dialog.clone();
     dcc_cancel_button.connect_clicked(move |_| {
         entry_dialog_clone_close.close();
+
+        // vacía el mensaje dcc chat
+        let mut dcc_response_lock = dcc_response_clone_cancel.lock().expect("Couldn't lock dcc_response at cancel action");
+        *dcc_response_lock = DCCMessage::new(String::new(), String::new(), String::new(), false);
+
         println!("Rechazar mensaje DCC");
     });
 
-
-    let client_clone_dcc = client.clone();
-
+    let dcc_response_clone_dcc_ok_button = dcc_response.clone();
+    // si el usuario acepta la conexion p2p
     dcc_ok_button.connect_clicked(move |_| {
         entry_dialog_clone_close_ok.close();
         println!("Iniciar conversación DCC");
         client_clone_dcc
             .lock()
             .expect("Couldn't lock client")
-            .handle_dcc_chat_session("UEJEJEJE HOLAA");
+            .handle_dcc_chat_session(dcc_response_clone_dcc_ok_button.clone());
     });
+
+    // ----------------------- SEND ARCHIVOS ---------------------------
+    let entry_dialog_resume_file = Builder::from_string(entry_dialog_resume_file_src);
+    let entry_dialog_resume: Dialog = entry_dialog_resume_file
+        .object("entry_dialog_resume")
+        .expect("Problems opening entry_dialog_resume");
+    let position_entry: Entry = entry_dialog_resume_file
+        .object("position_entry")
+        .expect("position_entry object not found");
+    let resume_button: Button = entry_dialog_resume_file
+        .object("resume")
+        .expect("resume object not found");
+    let ok_button_for_files: Button = entry_dialog_resume_file
+        .object("ok")
+        .expect("ok object not found");
+    let ignore_button: Button = entry_dialog_resume_file
+        .object("ignore")
+        .expect("ignore object not found");
+    let sender_information: Label = entry_dialog_resume_file
+        .object("sender_information")
+        .expect("sender_information object not found");
+
+
+    // Conecta los botones Ok, Ignore y Resume
+    let dcc_response_clone_cancel_file = dcc_response_files.clone();
+    let dcc_response_clone_cancel_file2 = dcc_response_files.clone();
+    let entry_dialog_receive_file_close = ignore_button.clone();
+    let entry_dialog_receive_file_ok = ok_button_for_files.clone();
+    let entry_dialog_receive_file_button = resume_button.clone();
+    let entry_dialog_receive_file_clone1 = entry_dialog_resume.clone();
+    let entry_dialog_receive_file_clone2 = entry_dialog_resume.clone();
+    let entry_dialog_receive_file_clone3 = entry_dialog_resume.clone();
+    let client_ok_receive_clone_dcc = client.clone();
+    let position_entry_clone = position_entry.clone();
+    let resume_client_clone = client.clone();
+    entry_dialog_receive_file_close.connect_clicked(move |_| {
+        entry_dialog_receive_file_clone1.close();
+
+        // vacía el mensaje dcc send
+        let mut dcc_response_lock = dcc_response_clone_cancel_file.lock().expect("Couldn't lock dcc_response at cancel action");
+        *dcc_response_lock = DCCMessage::new(String::new(), String::new(), String::new(), false);
+
+        println!("Rechazar mensaje DCC");
+    });
+    // si el usuario acepta la conexion p2p para envio de archivos
+    entry_dialog_receive_file_ok.connect_clicked(move |_| {
+        entry_dialog_receive_file_clone2.close();
+        println!("Iniciar conversación DCC");
+        client_ok_receive_clone_dcc
+            .lock()
+            .expect("Couldn't lock client")
+            .handle_dcc_send_files(dcc_response_clone_cancel_file2.clone());
+    });
+    // si debe resumir
+    entry_dialog_receive_file_button.connect_clicked(move |_| {
+        entry_dialog_receive_file_clone3.close();
+        // leer en el buffer el valor que ingresó el usuario   -> id del GtkEntry "position_entry"
+        // llamar a una funcion del cliente encargada de resumir el archivo
+
+        // let to = send_active_chat_file_clone.lock().expect("failed to get lock");
+        // let position_resume = position_entry_clone.buffer().text();
+
+        // if !to.is_empty() {
+        //         resume_client_clone
+        //         .lock()
+        //         .expect("Couldn't lock client")
+        //         .send_dcc_send_message(to.to_string(), position_resume);
+        // }
+        
+        // position_entry_clone.buffer().set_text("");
+    
+        // // vacía el mensaje dcc send
+        // let mut dcc_response_lock = dcc_response_clone_cancel.lock().expect("Couldn't lock dcc_response at cancel action");
+        // *dcc_response_lock = Received::Msg(String::new(), String::new(), String::new());
+
+        
+    });
+
+
+
 
 
     let rpl_label: Label = builder //rpl = reply
@@ -947,17 +1137,26 @@ pub fn run_chat(client: Arc<Mutex<ClientC>>) -> Result<(), Box<dyn Error>> {
     let chat_display_idle = chat_display;
     let client_idle = client;
     let conversations_idle = conversations;
+
+    let dcc_response_clone_receive = dcc_response.clone();
+    let dcc_response_clone_update = dcc_response.clone();
+    let dcc_response_files_clone_receive = dcc_response_files.clone();
+    let dcc_response_files_clone_update = dcc_response_files.clone();
     
     glib::idle_add_local(
         move || {
+            // refresca el chat del irc
             refresh_chat(&active_chat_idle, &chat_display_idle, &conversations_idle);
-            receive(&client_idle, &rpl_label, &conversations_idle, &mut dcc_responses);
+            // recibe mensajes y pop ups nuevos
+            receive(&client_idle, &rpl_label, &conversations_idle, dcc_response_clone_receive.clone(), dcc_response_files_clone_receive.clone());
             
-            update_dcc_dialog(&dcc_responses, &entry_dialog, &dcc_sender_name);
+            // se fija si debe mostrar o no el pop up de archivos (SEND) o de p2p (CHAT)
+            update_dcc_dialog(dcc_response_clone_update.clone(), &entry_dialog, &dcc_sender_name);
+            update_dcc_dialog(dcc_response_files_clone_update.clone(), &entry_dialog_resume, &sender_information);
             
             glib::Continue(true)
         }
-);
+    );
 
     Ok(())
 }

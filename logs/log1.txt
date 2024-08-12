@@ -145,3 +145,337 @@ NAMES
 WHO *
 PRIVMSG a :hola
 PRIVMSG a :DCC CHAT chat ::1 7676
+
+=============== SERVER EXECUTED ===============
+PASS 1111
+NICK a 0
+USER a a
+PASS 1111
+NICK b 0
+USER b b
+NAMES 
+WHO *
+PRIVMSG a :asd
+PRIVMSG a :DCC CHAT chat ::1 7676
+QUIT
+
+=============== SERVER EXECUTED ===============
+PASS 1111
+NICK a 0
+USER a a
+PASS 1111
+NICK b 0
+USER b b
+NAMES 
+WHO *
+PRIVMSG a :asdf
+PRIVMSG a :DCC CHAT chat ::1 7676
+NAMES 
+WHO *
+NAMES 
+WHO *
+PASS 1111
+NICK q 0
+USER q q
+NAMES 
+WHO *
+PRIVMSG q :DCC CHAT chat ::1 7676
+
+=============== SERVER EXECUTED ===============
+PASS 1111
+NICK a 0
+USER a a
+QUIT
+PASS 1111
+NICK b 0
+USER b b
+QUIT
+PASS 1111
+NICK c 0
+USER c c
+QUIT
+PASS 1111
+NICK d 0
+USER d d
+NAMES 
+WHO *
+PRIVMSG d :hola
+PRIVMSG d :DCC CHAT chat ::1 7676
+PASS 1111
+NICK x 0
+USER x x
+PASS 1111
+NICK y 0
+USER y y
+NAMES 
+WHO *
+PRIVMSG x :hola
+PRIVMSG x :DCC CHAT chat ::1 7676
+
+=============== SERVER EXECUTED ===============
+PASS 1111
+NICK a 0
+USER a a
+PASS 1111
+NICK b 0
+USER b b
+NAMES 
+WHO *
+PRIVMSG b :a
+PRIVMSG b :DCC CHAT chat ::1 7676
+PRIVMSG b :hola
+NAMES 
+WHO *
+PRIVMSG a :todo bien
+PRIVMSG b :DCC CHAT chat ::1 7676
+PASS 1111
+NICK x 0
+USER x x
+PASS 1111
+NICK z 0
+USER z z
+NAMES 
+WHO *
+NAMES 
+WHO *
+PRIVMSG x :a
+PRIVMSG x :DCC CHAT chat ::1 7676
+
+=============== SERVER EXECUTED ===============
+PASS 1111
+NICK a 0
+USER a a
+PASS 1111
+NICK b 0
+USER b b
+NAMES 
+WHO *
+PRIVMSG a :olis
+NAMES 
+WHO *
+PRIVMSG a :a
+NAMES 
+WHO *
+PRIVMSG b :hola carajo
+PRIVMSG b :DCC CHAT chat ::1 7676
+PASS 1111
+NICK a 0
+USER a a
+PASS 1111
+NICK c 0
+USER c c
+PASS 1111
+NICK d 0
+USER d d
+NAMES 
+WHO *
+PRIVMSG d :a
+PRIVMSG d :DCC CHAT chat ::1 7676
+QUIT
+
+=============== SERVER EXECUTED ===============
+PASS 1111
+NICK a 0
+USER a a
+PASS 1111
+NICK q 0
+USER q q
+
+=============== SERVER EXECUTED ===============
+PASS 1111
+NICK a 0
+USER a a
+PASS 1111
+NICK q 0
+USER q q
+NAMES 
+WHO *
+NAMES 
+WHO *
+PRIVMSG q :asd
+PASS 1111
+NICK s 0
+USER s s
+NAMES 
+WHO *
+NAMES 
+WHO *
+PRIVMSG a :hola
+PASS 1111
+NICK r 0
+USER r r
+NAMES 
+WHO *
+PASS 1111
+NICK y 0
+USER y y
+PASS 1111
+NICK e 0
+USER e e
+NAMES 
+WHO *
+NAMES 
+WHO *
+PRIVMSG e :hola
+PRIVMSG e :DCC CHAT chat 0.0.0.0 40219
+
+=============== SERVER EXECUTED ===============
+PASS 1111
+NICK a 0
+USER a a
+PASS 1111
+NICK b 0
+USER b b
+NAMES 
+WHO *
+PRIVMSG a :hola
+PASS 1111
+NICK q 0
+USER q q
+NAMES 
+WHO *
+PRIVMSG b :22
+PASS 1111
+NICK a 0
+USER a a
+PASS 1111
+NICK aq 0
+USER a a
+NAMES 
+WHO *
+NAMES 
+WHO *
+
+=============== SERVER EXECUTED ===============
+PASS 1111
+NICK a 0
+USER a a
+PASS 1111
+NICK b 0
+USER b b
+NAMES 
+WHO *
+PRIVMSG b :DCC CHAT chat 0.0.0.0 36439
+PASS 1111
+NICK ale 0
+USER a a
+PASS 1111
+NICK pepe 0
+USER pepe juarez
+NAMES 
+WHO *
+PRIVMSG ale :asd
+PRIVMSG ale :DCC CHAT chat 0.0.0.0 35635
+NAMES 
+WHO *
+QUIT
+QUIT
+
+=============== SERVER EXECUTED ===============
+PASS 1111
+NICK a 0
+USER a a
+PASS 1111
+NICK b 0
+USER b b
+NAMES 
+WHO *
+PRIVMSG a :aloo
+NAMES 
+WHO *
+PRIVMSG b :DCC SEND superduper 0.0.0.0 33919 33
+NAMES 
+WHO *
+NAMES 
+WHO *
+PRIVMSG b :DCC CHAT chat 0.0.0.0 40865
+QUIT
+QUIT
+PASS 1111
+NICK c 0
+USER c c
+PASS 1111
+NICK d 0
+USER d d
+NAMES 
+WHO *
+PRIVMSG d :DCC SEND ejemplo.txt 0.0.0.0 41679 365
+QUIT
+QUIT
+PASS 1111
+NICK e 0
+USER e e
+PASS 1111
+NICK f 0
+USER f f
+NAMES 
+WHO *
+NAMES 
+WHO *
+PRIVMSG f :hola soy e?
+PRIVMSG f :soy F
+NAMES 
+WHO *
+NAMES 
+WHO *
+PRIVMSG e :soy E?
+NAMES 
+WHO *
+PRIVMSG f :soy E
+NAMES 
+WHO *
+PRIVMSG f :DCC SEND ejemplo.txt 0.0.0.0 45249 365
+PRIVMSG f :DCC SEND ejemplo.txt 0.0.0.0 43773 365
+QUIT
+PASS 1111
+NICK a 0
+USER a a
+PASS 1111
+NICK b 0
+USER b b
+NAMES 
+WHO *
+PRIVMSG b :asdf
+NAMES 
+WHO *
+PRIVMSG a :DCC SEND ejemplo.txt 0.0.0.0 33387 365
+PRIVMSG a :DCC SEND foto.jpg 0.0.0.0 38203 2013556
+PASS 1111
+NICK r 0
+USER r r
+PASS 1111
+NICK g 0
+USER g g
+NAMES 
+WHO *
+PRIVMSG g :hola
+NAMES 
+WHO *
+PRIVMSG g :DCC SEND foto.jpg 0.0.0.0 35527 2013556
+PASS 1111
+NICK a 0
+USER a a
+PASS 1111
+NICK h 0
+USER a a
+PASS 1111
+NICK u 0
+USER u u
+NAMES 
+WHO *
+PRIVMSG u :hola
+PRIVMSG u :DCC SEND foto.jpg 0.0.0.0 33099 2013556
+PRIVMSG u :DCC CHAT chat 0.0.0.0 41709
+
+=============== SERVER EXECUTED ===============
+PASS 1111
+NICK a 0
+USER a a
+PASS 1111
+NICK b 0
+USER b b
+NAMES 
+WHO *
+PRIVMSG b :hola
+PRIVMSG b :DCC CHAT chat 0.0.0.0 37611
+PRIVMSG b :DCC SEND ejemplo.txt 0.0.0.0 34807 401

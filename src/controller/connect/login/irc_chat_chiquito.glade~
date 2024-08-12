@@ -433,7 +433,7 @@
           </object>
         </child>
         <child>
-          <object class="GtkButton" id="p2p_button">
+          <object class="GtkButton" id="dcc_button">
             <property name="label" translatable="yes">P2P</property>
             <property name="width-request">80</property>
             <property name="height-request">30</property>
@@ -443,6 +443,20 @@
           </object>
           <packing>
             <property name="x">398</property>
+            <property name="y">80</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkButton">
+            <property name="label" translatable="yes">button</property>
+            <property name="width-request">80</property>
+            <property name="height-request">30</property>
+            <property name="visible">True</property>
+            <property name="can-focus">True</property>
+            <property name="receives-default">True</property>
+          </object>
+          <packing>
+            <property name="x">313</property>
             <property name="y">80</property>
           </packing>
         </child>

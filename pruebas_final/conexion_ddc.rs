@@ -1,45 +1,94 @@
+use std::io::{Read, Write};
 use std::net::{TcpListener, TcpStream};
-use std::io::{BufRead, BufReader, BufWriter, Write};
+use std::sync::{Arc, Mutex, mpsc};
+use std::thread;
+use std::fs::File;
+use std::path::Path;
+use std::time::Duration;
+use std::env;
 
-fn handle_dcc_connection(mut stream: TcpStream) {
-    // Crear un buffer de entrada para leer mensajes del cliente DCC
-    let reader = BufReader::new(stream.try_clone().unwrap());
+const PACKET_SIZE: usize = 4; // 4 bytes (32 bits)
+const FILE_PATH: &str = "receptor/sample_file.txt";
 
-    // Crear un buffer de salida para enviar mensajes al cliente DCC
-    let mut writer = BufWriter::new(stream.try_clone().unwrap());
+fn main() -> std::io::Result<()> {
+    // Canal para comunicar la dirección del servidor al cliente
+    let (tx, rx) = mpsc::channel();
 
-    // Mandar un mensaje de bienvenida
-    let welcome_message = "Bienvenido a mi conexión DCC p2p!\n";
-    writer.write_all(welcome_message.as_bytes()).unwrap();
-    writer.flush().unwrap();
+    
+println!("Current directory: {}", env::current_dir().unwrap().display());
 
-    // Leer y procesar mensajes del cliente DCC
-    for line in reader.lines() {
-        let message = line.unwrap();
-        // Procesar el mensaje
-        println!("Mensaje recibido del cliente DCC: {}", message);
-    }
 
-    // Cerrar la conexión DCC
-    writer.write_all(b"Adios!").unwrap();
-    writer.flush().unwrap();
-}
+    // Inicia el servidor en un hilo
+    let server = thread::spawn(move || {
+        let listener = TcpListener::bind("127.0.0.1:0").expect("Failed to bind to address");
+        let local_addr = listener.local_addr().expect("Failed to get local address");
 
-fn main() {
-    // Crear un socket pasivo para escuchar conexiones DCC entrantes
-    let listener = TcpListener::bind("127.0.0.1:9000").unwrap();
-    println!("Escuchando en {}", "127.0.0.1:9000");
+        // Enviar la dirección del servidor al cliente
+        tx.send(local_addr).expect("Failed to send server address");
 
-    // Aceptar conexiones DCC entrantes en un bucle infinito
-    for stream in listener.incoming() {
-        match stream {
-            Ok(stream) => {
-                println!("Nueva conexión DCC entrante!");
-                handle_dcc_connection(stream);
+        println!("Server listening on {}", local_addr);
+
+        // Espera una conexión entrante
+        if let Ok((mut stream, _addr)) = listener.accept() {
+            println!("Client connected");
+
+            loop {
+                let mut buffer = [0u8; PACKET_SIZE];
+                match stream.read_exact(&mut buffer) {
+                    Ok(_) => {
+                        // Imprimir datos recibidos y enviar ACK
+                        println!("Received data: {:?}", buffer);
+                        stream.write_all(&buffer).expect("Failed to send ACK");
+                    }
+                    Err(e) => {
+                        eprintln!("Error reading from stream: {}", e);
+                        break;
+                    }
+                }
             }
-            Err(e) => {
-                eprintln!("Error al aceptar la conexión DCC: {}", e);
+        } else {
+            eprintln!("Failed to accept connection");
+        }
+    });
+
+    // Esperar para asegurar que el servidor está escuchando
+    thread::sleep(Duration::from_secs(1));
+
+    // Inicia el cliente
+    let client = thread::spawn(move || {
+        // Obtener la dirección del servidor del canal
+        let server_addr = rx.recv().expect("Failed to receive server address");
+        let mut stream = TcpStream::connect(server_addr).expect("Failed to connect to server");
+
+        // Abre el archivo y envía su contenido en paquetes de 32 bits
+        let path = Path::new(FILE_PATH);
+        let mut file = File::open(&path).expect("Failed to open file");
+
+        let mut buffer = [0u8; PACKET_SIZE];
+        loop {
+            match file.read_exact(&mut buffer) {
+                Ok(_) => {
+                    stream.write_all(&buffer).expect("Failed to send data");
+                    // Espera ACK
+                    let mut ack = [0u8; PACKET_SIZE];
+                    stream.read_exact(&mut ack).expect("Failed to receive ACK");
+                    println!("Received ACK: {:?}", ack);
+                }
+                Err(e) if e.kind() == std::io::ErrorKind::UnexpectedEof => {
+                    // Fin del archivo
+                    break;
+                }
+                Err(e) => {
+                    eprintln!("Error reading file: {}", e);
+                    break;
+                }
             }
         }
-    }
+    });
+
+    // Espera a que los hilos terminen
+    server.join().expect("Server thread panicked");
+    client.join().expect("Client thread panicked");
+
+    Ok(())
 }

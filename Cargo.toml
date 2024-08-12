@@ -34,3 +34,8 @@ path = "pruebas_final/00_client.rs"
 [[bin]]
 name = "cl2"
 path = "pruebas_final/00_server.rs"
+
+
+[[bin]]
+name = "dcc"
+path = "pruebas_final/conexion_ddc.rs"

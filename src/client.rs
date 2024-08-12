@@ -4,12 +4,58 @@
 use crate::app_errors;
 use std::collections::HashSet;
 use std::error::Error;
-use std::io::stdin;
+use std::fs::{create_dir_all, File, OpenOptions};
+use std::io::{self, stdin};
 use std::io::{BufRead, BufReader, Read, Write};
-use std::net::{TcpListener, TcpStream};
+use std::net::{Shutdown, TcpListener, TcpStream};
+use std::path::Path;
 use std::thread;
 use std::time::Duration;
+use std::sync::{Arc, Mutex};
 
+const PACKET_SIZE: usize = 256; // 4 bytes (32 bits)
+
+
+#[derive(Debug, Clone)]
+pub struct DCCMessage {
+    to: String,
+    from: String,
+    message: String,
+    is_read: bool,
+}
+
+impl DCCMessage {
+    pub fn new(to: String, from: String, message: String, is_read: bool) -> Self {
+        DCCMessage {
+            to,
+            from,
+            message,
+            is_read,
+        }
+    }
+    pub fn to(&self) -> &str {
+        &self.to
+    }
+
+    pub fn from(&self) -> &str {
+        &self.from
+    }
+
+    pub fn message(&self) -> &str {
+        &self.message
+    }
+
+    pub fn is_read(&self) -> bool {
+        self.is_read
+    }
+
+    pub fn set_is_read(&mut self, value: bool) {
+        self.is_read = value;
+    }
+}
+
+
+#[derive(Clone)]
 pub enum Received {
     Msg(String, String, String),
     IrcRpl(String, String),
@@ -105,13 +151,13 @@ impl ClientC {
     }
 
 
-
+    /// Lado de quien quiere iniciar la conexión
     /// sends a DCC CHAT request, writing the PRIVMSG command with a CTCP message to the server
-    pub fn send_dcc_chat(&mut self, to: String, ip_sender: String, port_sender: String) {
+    pub fn send_dcc_chat(&mut self, to: String) {
         
         // Crear el socket de escucha en la ip y puerto del sender
-        let listener = TcpListener::bind("localhost:7676").expect("Failed to bind to port");
-        // let listener = TcpListener::bind("0.0.0.0:0").expect("Failed to bind to port");      // escucha a toodas las posibles conexiones entrantes
+        // let listener = TcpListener::bind("localhost:7676").expect("Failed to bind to port");
+        let listener = TcpListener::bind("0.0.0.0:0").expect("Failed to bind to port");      // escucha a toodas las posibles conexiones entrantes
         let local_addr = listener.local_addr().expect("Failed to get local address");
 
         // Obtener la IP y el puerto
@@ -127,37 +173,326 @@ impl ClientC {
         // Clonar la referencia para enviarla al hilo
         // let self_clone = Arc::clone(&self);
         // std::thread::spawn(move || {
-            println!("Listening for incoming DCC CHAT connection on {}:{}", ip, port);
+        println!("Listening for incoming DCC CHAT connection on {}:{}", ip, port);
 
-            if let Ok((socket, addr)) = listener.accept() {
-                println!("Accepted DCC CHAT connection from {}", addr);
+            // Aceptar una conexión entrante
+        if let Ok((socket, addr)) = listener.accept() {
+            println!("Accepted DCC CHAT connection from {}", addr);
             
-                // Cerrar el socket del listener
-                drop(listener);
-    
-                // Establecer el socket de chat
-                self.dcc_chat = Some(socket.try_clone().expect("Failed to clone socket"));
-    
-                // Enviar el mensaje de bienvenida al socket de chat
-                if let Some(ref mut chat_socket) = self.dcc_chat {
-                    chat_socket.write_all("Bienvenido al chat P2P".as_bytes())
-                        .expect("Failed to send welcome message");
+            // Cerrar el socket del listener
+            drop(listener);
+
+            // Establecer el socket de chat
+            self.dcc_chat = Some(socket.try_clone().expect("Failed to clone socket"));
+
+            // Clonar el socket para uso en el hilo
+            let mut chat_socket = self.dcc_chat.as_ref().expect("Chat socket not initialized").try_clone().expect("Failed to clone chat socket");
+            let reader = io::BufReader::new(chat_socket.try_clone().expect("Failed to clone chat socket"));
+            let stdin = io::stdin();
+            
+            // Lanzar un hilo para leer mensajes desde el socket
+            let handle = thread::spawn(move || {
+                for line in reader.lines() {
+                    match line {
+                        Ok(message) => {
+                            if message.trim() == "DCC CLOSE" {
+                                println!("[Remote] Connection closed by remote.");
+                                break;
+                            } else {
+                                println!("[Remote] {}", message);
+                            }
+                        }
+                        Err(e) => eprintln!("Error reading from socket: {}", e),
+                    }
                 }
-            } else {
-                eprintln!("Failed to accept connection");
+            });
+
+            // Leer desde la entrada estándar y enviar al socket
+            for line in stdin.lock().lines() {
+                let input = line.unwrap_or_default();
+                if input.trim() == "DCC CLOSE" {
+                    if let Err(e) = chat_socket.write_all(b"DCC CLOSE\n") {
+                        eprintln!("Failed to send close message: {}", e);
+                    }
+                    break;
+                }
+                if let Err(e) = chat_socket.write_all(input.as_bytes()) {
+                    eprintln!("Failed to send message: {}", e);
+                    break;
+                }
+                if let Err(e) = chat_socket.write_all(b"\n") {
+                    eprintln!("Failed to send newline: {}", e);
+                    break;
+                }
             }
+
+            // Esperar a que el hilo de lectura termine
+            if let Err(e) = chat_socket.shutdown(Shutdown::Both) {
+                eprintln!("Error shutting down socket: {}", e);
+            }
+            handle.join().expect("Thread panicked");
+        } else {
+            eprintln!("Failed to accept connection");
+        }
         // });
     }
 
+    /// El cliente acepta una conexión P2P, se parsea del mensaje la ip y puerto
+    /// ya se sabe que es un mensaje DCC. Se conecta al TCP Stream
+    pub fn handle_dcc_chat_session(&mut self, dcc_response: Arc<Mutex<DCCMessage>>) {
+        let mut dcc_response_lock = dcc_response.lock().expect("Couldn't lock dcc_response");
+        let DCCMessage {ref from, ref to, ref message, ref is_read} = *dcc_response_lock;
+
+        // Quitar los caracteres de inicio y final (\x01)
+        let trimmed_message = message.trim_start_matches('\x01').trim_end_matches('\x01');
+
+        // Dividir el mensaje por espacios
+        let parts: Vec<&str> = trimmed_message.split_whitespace().collect();
+
+        // Asegurarse de que hay suficientes partes
+        if parts.len() >= 4 && parts[0] == "DCC" && parts[1] == "CHAT" && parts[2] == "chat" {
+            let ip = parts[3];
+            let port = parts[4];
+            
+            println!("Extracted IP: {}", ip);
+            println!("Extracted Port: {}", port);
+
+            // Conectar al IP y puerto suministrado
+            match TcpStream::connect(format!("{}:{}", ip, port)) {
+                Ok(chat_socket) => {
+                    println!("Successfully connected to {}:{}", ip, port);
+                    self.dcc_chat = Some(chat_socket.try_clone().expect("Failed to clone chat_socket"));
     
-    pub fn handle_dcc_chat_session(&mut self, mensaje: &str) {
-        // escribir mensaje generico
-        if let Some(ref mut chat_socket) = self.dcc_chat {
-            chat_socket.write_all(mensaje.as_bytes())
-                .expect("Failed to send welcome message");
+                    // Lanzar un hilo para leer mensajes desde el socket
+                    let mut chat_socket = self.dcc_chat.as_ref().expect("Chat socket not initialized").try_clone().expect("Failed to clone chat_socket");
+                    let reader = io::BufReader::new(chat_socket.try_clone().expect("Failed to clone chat_socket"));
+                    let stdin = io::stdin();
+                    let handle = thread::spawn(move || {
+                        for line in reader.lines() {
+                            match line {
+                                Ok(message) => {
+                                    if message.trim() == "DCC CLOSE" {
+                                        println!("[Remote] Chat closed.");
+                                        break;
+                                    }
+                                    println!("[Remote] {}", message);
+                                }
+                                Err(e) => eprintln!("Error reading from socket: {}", e),
+                            }
+                        }
+                    });
+    
+                    // Leer desde la entrada estándar y enviar al socket
+                    for line in stdin.lock().lines() {
+                        match line {
+                            Ok(input) => {
+                                if input.trim() == "DCC CLOSE" {
+                                    if let Err(e) = chat_socket.write_all(b"DCC CLOSE\n") {
+                                        eprintln!("Failed to send close message: {}", e);
+                                    }
+                                    break;
+                                }
+                                if let Err(e) = chat_socket.write_all(input.as_bytes()) {
+                                    eprintln!("Failed to send message: {}", e);
+                                    break;
+                                }
+                                if let Err(e) = chat_socket.write_all(b"\n") {
+                                    eprintln!("Failed to send newline: {}", e);
+                                    break;
+                                }
+                            }
+                            Err(e) => eprintln!("Error reading from stdin: {}", e),
+                        }
+                    }
+    
+                    // Esperar a que el hilo de lectura termine
+                    if let Err(e) = chat_socket.shutdown(Shutdown::Both) {
+                        eprintln!("Error shutting down socket: {}", e);
+                    }
+                    handle.join().expect("Thread panicked");
+                }
+                Err(e) => {
+                    eprintln!("Failed to connect to {}:{}. Error: {}", ip, port, e);
+                }    
+            }
+        } else {
+            println!("Message does not match expected format: {}", message);
         }
+        // dejarlo vacío para otra posible conexion
+        *dcc_response_lock = DCCMessage::new(String::new(), String::new(), String::new(), false);
     }
     
+
+
+    // envia mensaje SEND por privmsg y espera a establecer una conexión
+    pub fn send_dcc_send_message(&mut self, to: String, file_path: String) {
+        // Crear el socket de escucha en la ip y puerto del sender
+        let listener = TcpListener::bind("0.0.0.0:0").expect("Failed to bind to port");
+        let local_addr = listener.local_addr().expect("Failed to get local address");
+
+        // Obtener la IP y el puerto
+        let ip = local_addr.ip().to_string();
+        let port = local_addr.port().to_string();
+
+        let path = Path::new(&file_path);
+        let mut file = File::open(&path).expect("Failed to open file");
+        let filesize = path.metadata().expect("Failed to get file metadata").len().to_string();
+        
+        let filename = path.file_name().unwrap_or_else(|| "unknown".as_ref()).to_string_lossy();
+        
+        // Enviar el mensaje DCC SEND a través de IRC
+        let message_dcc = format!("\x01DCC SEND {} {} {} {}\x01", filename, ip, port, filesize);
+        println!("MENSAJE A ENVIAR: {}", message_dcc);
+        self.send_privmsg(to, message_dcc);
+
+        println!("Listening for incoming DCC SEND connection on {}:{}", ip, port);
+
+        if let Ok((socket, addr)) = listener.accept() {
+            println!("Accepted DCC SEND connection from {}", addr);
+
+            // Enviar el archivo en paquetes y esperar confirmaciones
+            if let Err(e) = ClientC::send_file_in_packets(&mut file, socket) {
+                eprintln!("Error sending file: {}", e);
+            }
+
+            println!("File transfer completed successfully.");
+
+        } else {
+            eprintln!("Failed to accept connection");
+        }
+    }
+
+
+    // Función para enviar datos en paquetes y esperar confirmación
+    fn send_file_in_packets(file: &mut File, mut stream: TcpStream) -> Result<(), std::io::Error> {
+        let mut buffer = [0u8; PACKET_SIZE];
+        let mut total_bytes_sent = 0;
+
+        loop {
+            // Leer un paquete del archivo
+            let bytes_read = file.read(&mut buffer)?;
+
+            if bytes_read == 0 {
+                // Archivo completamente leído
+                break;
+            }
+
+            // Enviar el paquete
+            stream.write_all(&buffer[..bytes_read])?;
+            stream.flush()?;
+
+            // Esperar confirmación de recepción del paquete
+            let mut ack_buffer = [0u8; 4];
+            stream.read_exact(&mut ack_buffer)?;
+            let ack_bytes_received = u32::from_be_bytes(ack_buffer);
+
+            if ack_bytes_received != total_bytes_sent as u32 + bytes_read as u32 {
+                eprintln!("Acknowledgement mismatch: expected {}, got {}", total_bytes_sent + bytes_read, ack_bytes_received);
+                return Err(std::io::Error::new(std::io::ErrorKind::Other, "Acknowledgement mismatch"));
+            }
+
+            total_bytes_sent += bytes_read;
+            println!("bytes_read / total_bytes_sent: {} / {}. ack_bytes_received: {} ", bytes_read, total_bytes_sent, ack_bytes_received);
+
+        }
+
+        // Esperar confirmación final (para el último paquete)
+        let mut final_ack_buffer = [0u8; 4];
+        stream.read_exact(&mut final_ack_buffer)?;
+        let final_ack_bytes_received = u32::from_be_bytes(final_ack_buffer);
+
+        if final_ack_bytes_received != total_bytes_sent as u32 {
+            eprintln!("Final acknowledgement mismatch: expected {}, got {}", total_bytes_sent, final_ack_bytes_received);
+            return Err(std::io::Error::new(std::io::ErrorKind::Other, "Final acknowledgement mismatch"));
+        }
+
+        Ok(())
+    }
+
+
+    /// Lado de quien recibe la conexión para la transferencia de archivos
+    pub fn handle_dcc_send_files(&mut self, dcc_response: Arc<Mutex<DCCMessage>>){
+        let mut dcc_response_lock = dcc_response.lock().expect("Couldn't lock dcc_response");
+        let DCCMessage {ref from, ref to, ref message, ref is_read} = *dcc_response_lock;
+
+        // Quitar los caracteres de inicio y final (\x01)
+        let trimmed_message = message.trim_start_matches('\x01').trim_end_matches('\x01');
+
+        // Dividir el mensaje por espacios
+        let parts: Vec<&str> = trimmed_message.split_whitespace().collect();
+
+        // Asegurarse de que hay suficientes partes
+        if parts.len() >= 5 && parts[0] == "DCC" && parts[1] == "SEND" {
+            let filename = parts[2];
+            let ip = parts[3];
+            let port = parts[4];
+            let filesize_str = parts[5];
+            let filesize: u64 = match filesize_str.parse() {
+                Ok(n) => n,
+                Err(e) => {
+                    eprintln!("Error parsing filesize: {}", e);
+                    return;
+                }
+            };
+            
+            println!("Extracted filename: {}, IP: {}, Port: {}, filesize: {}", filename, ip, port, filesize);
+
+            // Conectar al IP y puerto suministrado
+            // Conectar al IP y puerto suministrado
+            match TcpStream::connect(format!("{}:{}", ip, port)) {
+                Ok(mut stream) => {
+                    println!("Successfully connected to {}:{}", ip, port);
+
+                    // Crear la carpeta 'receptor' si no existe
+                    let receptor_dir = Path::new("receptor");
+                    if !receptor_dir.exists() {
+                        create_dir_all(receptor_dir).expect("Failed to create 'receptor' directory");
+                    }
+
+                    // Construir la ruta completa del archivo dentro de la carpeta 'receptor'
+                    let path = receptor_dir.join(filename);
+                    let mut file = OpenOptions::new().create(true).write(true).open(&path)
+                        .expect("Failed to open file for writing");
+
+                    let mut total_bytes_received: u64 = 0;
+                    let mut buffer = [0u8; PACKET_SIZE];
+
+                    while total_bytes_received < filesize {
+                        // Leer el paquete de la conexión
+                        let bytes_read = stream.read(&mut buffer).expect("error en el buffer");
+
+                        if bytes_read == 0 {
+                            // Si no se leyeron datos, se asume que la conexión se cerró
+                            break;
+                        }
+
+                        // Escribir el paquete en el archivo
+                        file.write_all(&buffer[..bytes_read]).expect("error en el buffer");
+                        total_bytes_received += bytes_read as u64;
+
+                        // Enviar confirmación de recepción
+                        let ack = (total_bytes_received as u32).to_be_bytes();
+                        stream.write_all(&ack).expect("error en el buffer");
+                        stream.flush().expect("error at flush stream");
+
+                        println!("bytes_read / total_bytes_received: {} / {}. File size: {} ", bytes_read, total_bytes_received, filesize);
+                    }
+
+                    println!("File transfer completed successfully.");
+
+                    // Cerrar la conexión
+                    stream.shutdown(Shutdown::Both).expect("Failed to shut down the connection");
+                }
+                Err(e) => {
+                    eprintln!("Failed to connect to {}:{}. Error: {}", ip, port, e);
+                }
+            }
+        } else {
+            println!("Message does not match expected format: {}", message);
+        }
+        // dejarlo vacío para otra posible conexion
+        *dcc_response_lock = DCCMessage::new(String::new(), String::new(), String::new(), false);
+    }
 
 
 
