@@ -4,6 +4,7 @@
     // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
     "version": "0.2.0",
     "configurations": [
+
         // {
         //     "type": "lldb",
         //     "request": "launch",
@@ -100,7 +101,7 @@
         {
             "type": "lldb",
             "request": "launch",
-            "name": "Debuguear 'client' server 1",
+            "name": "client CLI to server 1 - Debug",
             "cargo": {
                 "args": [
                     "build",
@@ -140,7 +141,7 @@
         {
             "type": "lldb",
             "request": "launch",
-            "name": "Debuguear 'client-gtk'",
+            "name": "client-gtk - Debug",
             "cargo": {
                 "args": [
                     "build",
@@ -177,7 +178,7 @@
         {
             "type": "lldb",
             "request": "launch",
-            "name": "Debuguear servidor 'server' 1",
+            "name": "Servidor 1 - Debug",
             "cargo": {
                 "args": [
                     "build",
@@ -190,6 +191,24 @@
                 }
             },
             "args": ["server_uno_config.csv"],
+            "cwd": "${workspaceFolder}"
+        },
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "Servidor 2 conectado a 1 - Debug",
+            "cargo": {
+                "args": [
+                    "build",
+                    "--bin=server",
+                    "--package=irc_2c_2022"
+                ],
+                "filter": {
+                    "name": "server",
+                    "kind": "bin"
+                }
+            },
+            "args": ["server_dos_config.csv", "server_uno", "localhost", "7878", "1111"],
             "cwd": "${workspaceFolder}"
         },
         // {

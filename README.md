@@ -31,6 +31,8 @@ cargo run --bin=client -- {ip} {port}
 cargo run --bin=server -- server_uno_config.csv
 #server 2 conectado a server 1
 cargo run --bin=server -- server_dos_config.csv server_uno localhost 7878 1111
+#server 3 conectado a server 2
+cargo run --bin=server -- server_tres_config.csv server_dos localhost 7879 2222
 ```
 
 * Usar el cliente (sin interfaz grafica) una vez ejecutado en la terminal
